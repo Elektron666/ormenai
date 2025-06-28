@@ -1,18 +1,38 @@
 {
-  "name": "ormen-ai-fabric-store",
+  "name": "ormen-quantum-ai-enterprise",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0-enterprise",
   "type": "module",
+  "description": "Silicon Valley Grade AI-Powered Fabric Consultation Platform",
+  "keywords": ["AI", "Machine Learning", "Quantum Computing", "Blockchain", "Enterprise", "Fabric", "Textile"],
+  "author": "ORMEN Tekstil & Silicon Valley Technologies",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest",
+    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier --write src/**/*.{js,jsx,css,md}"
   },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "framer-motion": "^11.11.17",
-    "react-icons": "^5.3.0"
+    "react-icons": "^5.3.0",
+    "@tensorflow/tfjs": "^4.15.0",
+    "chart.js": "^4.4.0",
+    "react-chartjs-2": "^5.2.0",
+    "axios": "^1.6.2",
+    "lodash": "^4.17.21",
+    "date-fns": "^2.30.0",
+    "uuid": "^9.0.1",
+    "crypto-js": "^4.2.0",
+    "web3": "^4.3.0",
+    "socket.io-client": "^4.7.4",
+    "ml-matrix": "^6.10.7",
+    "natural": "^6.8.0",
+    "compromise": "^14.10.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
@@ -21,6 +41,23 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.14",
-    "vite": "^5.4.10"
-  }
+    "vite": "^5.4.10",
+    "vitest": "^1.0.4",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^3.1.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ormen-tekstil/quantum-ai-enterprise.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ormen-tekstil/quantum-ai-enterprise/issues"
+  },
+  "homepage": "https://ormen-ai.com"
 }

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { HiSparkles, HiCog, HiLightningBolt, HiBrain } from 'react-icons/hi'
+import { HiSparkles, HiCog, HiLightningBolt, HiChip } from 'react-icons/hi'
 
 export default function Header({ onAdminClick }) {
   return (
@@ -14,7 +14,7 @@ export default function Header({ onAdminClick }) {
           <div className="flex items-center space-x-3">
             <div className="bg-white p-3 rounded-xl shadow-lg">
               <div className="flex items-center space-x-1">
-                <HiBrain className="w-6 h-6 text-purple-600" />
+                <HiChip className="w-6 h-6 text-purple-600" />
                 <HiLightningBolt className="w-5 h-5 text-yellow-500" />
                 <HiSparkles className="w-5 h-5 text-blue-600" />
               </div>

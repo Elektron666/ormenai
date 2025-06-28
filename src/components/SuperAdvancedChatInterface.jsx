@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { HiPaperAirplane, HiUser, HiSparkles, HiMicrophone, HiStop, HiBrain, HiLightningBolt, HiHeart } from 'react-icons/hi'
+import { HiPaperAirplane, HiUser, HiSparkles, HiMicrophone, HiStop, HiChip, HiLightningBolt, HiHeart } from 'react-icons/hi'
 import AIMascot from './AIMascot'
 import { QuantumAIEngine } from './AdvancedAIEngine'
 import { fabricProducts } from '../data/products'
@@ -201,7 +201,7 @@ export default function SuperAdvancedChatInterface({ chatHistory, setChatHistory
             />
             <div>
               <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-                <HiBrain className="w-5 h-5 text-purple-600 mr-2" />
+                <HiChip className="w-5 h-5 text-purple-600 mr-2" />
                 ORMEN Quantum AI
                 <HiLightningBolt className="w-4 h-4 text-yellow-500 ml-2" />
               </h2>
@@ -355,7 +355,7 @@ export default function SuperAdvancedChatInterface({ chatHistory, setChatHistory
             className="flex justify-start"
           >
             <div className="bg-gradient-to-r from-purple-100 to-blue-100 rounded-lg p-3 flex items-center space-x-2 border border-purple-200">
-              <HiBrain className="w-4 h-4 text-purple-600" />
+              <HiChip className="w-4 h-4 text-purple-600" />
               <div className="flex space-x-1">
                 <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
                 <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>

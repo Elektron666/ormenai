@@ -199,7 +199,7 @@ Size nasıl yardımcı olabilirim? 🤖✨`,
               <div className="text-blue-200">Uptime</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-yellow-400">< 100ms</div>
+              <div className="text-2xl font-bold text-yellow-400">{"< 100ms"}</div>
               <div className="text-blue-200">Response Time</div>
             </div>
             <div>

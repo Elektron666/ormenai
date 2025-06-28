@@ -40,10 +40,10 @@ export class QuantumAIEngine {
 
   async initializeAdvancedSystems() {
     // Gelişmiş sistemleri başlat
-    await this.loadMarketData()
-    await this.initializeWeatherSystem()
-    await this.loadNewsFeeds()
-    await this.calibratePersonality()
+    await this.marketAnalysis.analyzeMarket()
+    await this.weatherAPI.getCurrentWeather()
+    await this.newsAPI.getRelevantNews()
+    await this.personalityMatrix.calibratePersonality()
   }
 
   // Hava durumu entegrasyonu
@@ -129,6 +129,67 @@ export class QuantumAIEngine {
     }
 
     return bestMatch
+  }
+
+  async extractAdvancedEntities(message) {
+    // Basit entity extraction
+    const entities = {
+      colors: [],
+      products: [],
+      numbers: []
+    }
+
+    const colors = ['mavi', 'kırmızı', 'yeşil', 'sarı', 'siyah', 'beyaz', 'gri', 'pembe']
+    const products = ['kumaş', 'koltuk', 'sandalye', 'perde', 'yastık']
+    
+    const message_lower = message.toLowerCase()
+    
+    colors.forEach(color => {
+      if (message_lower.includes(color)) {
+        entities.colors.push(color)
+      }
+    })
+
+    products.forEach(product => {
+      if (message_lower.includes(product)) {
+        entities.products.push(product)
+      }
+    })
+
+    return entities
+  }
+
+  async analyzeSentiment(message) {
+    const positiveWords = ['güzel', 'harika', 'mükemmel', 'süper', 'iyi']
+    const negativeWords = ['kötü', 'berbat', 'fena', 'kötü']
+    
+    const message_lower = message.toLowerCase()
+    let score = 0
+    
+    positiveWords.forEach(word => {
+      if (message_lower.includes(word)) score += 1
+    })
+    
+    negativeWords.forEach(word => {
+      if (message_lower.includes(word)) score -= 1
+    })
+    
+    if (score > 0) return 'positive'
+    if (score < 0) return 'negative'
+    return 'neutral'
+  }
+
+  calculateComplexity(message) {
+    const wordCount = message.split(' ').length
+    if (wordCount < 5) return 'simple'
+    if (wordCount < 15) return 'medium'
+    return 'complex'
+  }
+
+  detectUrgency(message) {
+    const urgentWords = ['acil', 'hemen', 'şimdi', 'urgent', 'asap']
+    const message_lower = message.toLowerCase()
+    return urgentWords.some(word => message_lower.includes(word)) ? 'high' : 'normal'
   }
 
   // Gelişmiş yanıt üretimi
@@ -290,6 +351,41 @@ export class QuantumAIEngine {
     }
     
     response += `\n\nBugün sana nasıl yardımcı olabilirim? Kumaş mı arıyorsun yoksa sadece sohbet mi etmek istiyorsun? 😉`
+    
+    return response
+  }
+
+  async generateProductResponse(message, analysis, userProfile) {
+    let response = `Kumaş mı arıyorsun? 🎯 Harika! Ben kumaş konusunda uzmanım! ✨\n\n`
+    
+    if (analysis.entities.colors && analysis.entities.colors.length > 0) {
+      const color = analysis.entities.colors[0]
+      response += `${color} rengi çok güzel bir seçim! 🎨 ${color} kumaşlarımızdan birkaç tanesini göstereyim:\n\n`
+    }
+    
+    response += `🌟 **Önerilerim:**\n`
+    response += `• Premium Kadife Kumaş - Lüks ve şık 💎\n`
+    response += `• Deri Görünümlü Kumaş - Modern ve dayanıklı 🔥\n`
+    response += `• Dokuma Kumaş - Klasik ve zarif 🏛️\n`
+    response += `• Su Geçirmez Kumaş - Pratik ve fonksiyonel 💧\n\n`
+    
+    response += `Hangi oda için kumaş arıyorsun? Salon mu, yatak odası mı? 🏠`
+    
+    return response
+  }
+
+  async generateGeneralResponse(message, analysis, userProfile) {
+    let response = `Merhaba! 👋 Ben ORMEN Kumaş'ın AI asistanıyım! 🤖✨\n\n`
+    
+    response += `Sana nasıl yardımcı olabilirim? İşte yapabileceklerim:\n\n`
+    response += `🎯 Kumaş önerileri\n`
+    response += `💰 Fiyat bilgileri\n`
+    response += `🎨 Renk danışmanlığı\n`
+    response += `📏 Ölçü hesaplamaları\n`
+    response += `🏠 Dekorasyon tavsiyeleri\n`
+    response += `☀️ Hava durumu (merak edersen!)\n\n`
+    
+    response += `Ne konuşmak istiyorsun? 😊`
     
     return response
   }
@@ -477,6 +573,11 @@ class PersonalityAI {
       }
     }
     return 'neutral'
+  }
+
+  async calibratePersonality() {
+    // Kişilik kalibrasyonu
+    console.log('Personality calibrated')
   }
 
   reinforcePattern(message, response) {

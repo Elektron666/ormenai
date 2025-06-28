@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import RealisticChatInterface from './components/RealisticChatInterface'
+import ExpertChatInterface from './components/ExpertChatInterface'
 import ProductCatalog from './components/ProductCatalog'
 import AdminPanel from './components/AdminPanel'
 import Header from './components/Header'
@@ -12,9 +12,10 @@ function App() {
   const [chatHistory, setChatHistory] = useState([
     {
       type: 'ai',
-      message: 'Merhaba! ORMEN Tekstil\'e hoş geldiniz. Ben size kumaş seçiminde yardımcı olacak AI danışmanınızım.\n\n25 yıllık tecrübemizle size en uygun kumaşları bulabilirim. Hava durumu, zaman bilgisi ve tabii ki kumaş konusunda her türlü sorunuza yanıt verebilirim.\n\nBugün hangi kumaşı arıyorsunuz?',
+      message: '🎉 **ORMEN Tekstil Gelişmiş AI Danışmanına Hoş Geldiniz!**\n\nBen size şu konularda uzman düzeyde yardımcı olabilirim:\n\n🧵 **Kumaş Uzmanlığı:**\n• Döşemelik kumaş türleri ve özellikleri\n• Renk psikolojisi ve uyum önerileri\n• Bakım ve temizlik rehberi\n• 2024 trend bilgileri\n\n🌤️ **Güncel Bilgiler:**\n• Anlık hava durumu\n• Zaman ve tarih bilgisi\n• Mevsimsel öneriler\n\n🔍 **Akıllı Arama:**\n• Ürün filtreleme ve öneriler\n• Fiyat karşılaştırması\n• Stok durumu\n\n💡 **Örnek sorular:**\n• "Döşemelik kumaş nedir?"\n• "Bugün hava nasıl?"\n• "Saat kaç?"\n• "Mavi kadife koltuk kumaşı öner"\n\nSize nasıl yardımcı olabilirim? 😊',
       timestamp: new Date(),
-      confidence: 0.95
+      confidence: 0.95,
+      intent: 'greeting'
     }
   ])
 
@@ -24,13 +25,13 @@ function App() {
       
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Sol taraf - Realistic Chat Interface */}
+          {/* Sol taraf - Expert Chat Interface */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <RealisticChatInterface 
+            <ExpertChatInterface 
               chatHistory={chatHistory}
               setChatHistory={setChatHistory}
               selectedProducts={selectedProducts}
@@ -51,42 +52,43 @@ function App() {
           </motion.div>
         </div>
 
-        {/* AI Özellikleri */}
+        {/* Gelişmiş AI Özellikleri */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-8 bg-white rounded-lg shadow-lg p-6"
+          className="mt-8 bg-white rounded-lg shadow-xl p-6 border-2 border-blue-100"
         >
-          <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-            🤖 AI Danışman Özellikleri
+          <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+            🚀 Gelişmiş AI Teknolojileri
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <div className="text-2xl mb-2">🧠</div>
-              <h4 className="font-semibold text-gray-800">Akıllı Analiz</h4>
-              <p className="text-sm text-gray-600">Mesajlarınızı analiz eder ve en uygun yanıtı verir</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200">
+              <div className="text-3xl mb-3">🧠</div>
+              <h4 className="font-bold text-gray-800 mb-2">Derin Öğrenme</h4>
+              <p className="text-sm text-gray-600">Her konuşmadan öğrenir ve kendini sürekli geliştirir</p>
             </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <div className="text-2xl mb-2">💭</div>
-              <h4 className="font-semibold text-gray-800">Müşteri Hafızası</h4>
-              <p className="text-sm text-gray-600">Tercihlerinizi hatırlar ve kişisel öneriler sunar</p>
+            <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200">
+              <div className="text-3xl mb-3">🌐</div>
+              <h4 className="font-bold text-gray-800 mb-2">İnternet Verileri</h4>
+              <p className="text-sm text-gray-600">Güncel hava durumu ve zaman bilgisi sağlar</p>
             </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <div className="text-2xl mb-2">🌤️</div>
-              <h4 className="font-semibold text-gray-800">Hava Durumu</h4>
-              <p className="text-sm text-gray-600">Güncel hava durumu bilgisi sağlar</p>
+            <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200">
+              <div className="text-3xl mb-3">📚</div>
+              <h4 className="font-bold text-gray-800 mb-2">Bilgi Ansiklopedisi</h4>
+              <p className="text-sm text-gray-600">25 yıllık kumaş uzmanlığı bilgi tabanı</p>
             </div>
-            <div className="text-center p-4 bg-orange-50 rounded-lg">
-              <div className="text-2xl mb-2">⏰</div>
-              <h4 className="font-semibold text-gray-800">Zaman Bilinci</h4>
-              <p className="text-sm text-gray-600">Tarih ve saat bilgisi verir</p>
+            <div className="text-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+              <div className="text-3xl mb-3">🎯</div>
+              <h4 className="font-bold text-gray-800 mb-2">Yüksek Doğruluk</h4>
+              <p className="text-sm text-gray-600">%95 güven seviyesi ile profesyonel yanıtlar</p>
             </div>
           </div>
           
-          <div className="mt-6 text-center">
-            <p className="text-gray-600 italic">
-              "ORMEN AI - Profesyonel kumaş danışmanlığı için geliştirilmiş akıllı sistem"
+          <div className="mt-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 text-white text-center">
+            <h4 className="text-xl font-bold mb-2">🏆 ORMEN AI - Sektörün En Gelişmiş Kumaş Danışmanı</h4>
+            <p className="text-blue-100">
+              Silikon Vadisi teknolojileri ile güçlendirilmiş, Türkiye'nin en akıllı kumaş uzmanı
             </p>
           </div>
         </motion.div>

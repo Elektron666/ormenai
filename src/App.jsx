@@ -12,8 +12,10 @@ function App() {
   const [chatHistory, setChatHistory] = useState([
     {
       type: 'ai',
-      message: 'Merhaba! Ben ORMEN AI, gelişmiş yapay zeka destekli döşemelik kumaş uzmanınızım. 🤖✨\n\nSize nasıl yardımcı olabilirim?\n\n• Kumaş türü, renk ve kullanım alanı söyleyin\n• Fiyat aralığınızı belirtin\n• Sesli mesaj da gönderebilirsiniz\n\nBen sürekli öğreniyor ve gelişiyorum, size en iyi hizmeti verebilmek için!',
-      timestamp: new Date()
+      message: 'Naber dostum! 😄 Ben ORMEN, senin kumaş uzmanın! 25 yıllık tecrübemle sana en kaliteli kumaşları bulacağım! 🎯\n\nBugün nasılsın? Hangi tür kumaş arıyorsun?\n\n• 🎨 Renk ve desen tercihin?\n• 🏠 Hangi mobilya için?\n• 💰 Bütçen ne kadar?\n\nSamimi konuşalım, ben seni çok seviyorum! ❤️',
+      timestamp: new Date(),
+      emotion: 'excited',
+      energy: 95
     }
   ])
 
@@ -50,7 +52,7 @@ function App() {
           </motion.div>
         </div>
 
-        {/* AI Özellikler Bilgi Kartı */}
+        {/* AI Kişilik Özellikleri Bilgi Kartı */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -58,24 +60,36 @@ function App() {
           className="mt-8 bg-white rounded-lg shadow-lg p-6"
         >
           <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-            🧠 Gelişmiş AI Özellikleri
+            🤖 ORMEN AI Kişilik Özellikleri
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <div className="text-2xl mb-2">🧠</div>
-              <h4 className="font-semibold text-gray-800">Akıllı Öğrenme</h4>
-              <p className="text-sm text-gray-600">Her konuşmadan öğrenir ve kendini geliştirir</p>
+              <div className="text-2xl mb-2">😊</div>
+              <h4 className="font-semibold text-gray-800">Samimi & Dostane</h4>
+              <p className="text-sm text-gray-600">Sıcak ve samimi konuşma tarzı</p>
             </div>
             <div className="text-center p-4 bg-green-50 rounded-lg">
-              <div className="text-2xl mb-2">💭</div>
-              <h4 className="font-semibold text-gray-800">Müşteri Hafızası</h4>
-              <p className="text-sm text-gray-600">Tercihlerinizi hatırlar ve kişisel öneriler sunar</p>
+              <div className="text-2xl mb-2">🧠</div>
+              <h4 className="font-semibold text-gray-800">Sürekli Öğrenen</h4>
+              <p className="text-sm text-gray-600">Her konuşmadan öğrenir ve gelişir</p>
             </div>
             <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <div className="text-2xl mb-2">🎯</div>
-              <h4 className="font-semibold text-gray-800">Akıllı Analiz</h4>
-              <p className="text-sm text-gray-600">Mesajlarınızı analiz eder ve en uygun ürünleri bulur</p>
+              <div className="text-2xl mb-2">❤️</div>
+              <h4 className="font-semibold text-gray-800">Müşteri Odaklı</h4>
+              <p className="text-sm text-gray-600">Sizi hatırlar ve özel öneriler sunar</p>
             </div>
+            <div className="text-center p-4 bg-yellow-50 rounded-lg">
+              <div className="text-2xl mb-2">🎯</div>
+              <h4 className="font-semibold text-gray-800">Uzman Danışman</h4>
+              <p className="text-sm text-gray-600">25 yıllık sektör tecrübesi</p>
+            </div>
+          </div>
+          
+          <div className="mt-6 text-center">
+            <p className="text-gray-600 italic">
+              "ORMEN AI sadece bir bot değil, gerçek bir kumaş uzmanı dostunuz! 
+              Sizinle samimi sohbet eder, şakalaşır ve en iyi kumaşları bulmanıza yardımcı olur." 🌟
+            </p>
           </div>
         </motion.div>
       </main>

@@ -4,58 +4,296 @@ import { HiPaperAirplane, HiUser, HiSparkles, HiMicrophone, HiStop } from 'react
 import AIMascot from './AIMascot'
 import { fabricProducts } from '../data/products'
 
-// Gelişmiş AI Sınıfı
-class AdvancedAI {
+// Gelişmiş AI Kişiliği ve Zeka Sistemi
+class PersonalityAI {
   constructor() {
-    this.customerMemory = new Map()
-    this.conversationContext = []
-    this.learningData = []
-    this.preferences = new Map()
-  }
-
-  // Müşteri hafızası
-  rememberCustomer(customerId, data) {
-    if (!this.customerMemory.has(customerId)) {
-      this.customerMemory.set(customerId, {
-        preferences: {},
-        history: [],
-        lastVisit: new Date(),
-        purchaseHistory: []
-      })
+    this.personality = {
+      name: "ORMEN",
+      mood: "friendly", // friendly, excited, helpful, playful, professional
+      energy: 80, // 0-100
+      relationship_level: 0, // Müşteriyle ilişki seviyesi
+      memory: new Map(),
+      learned_patterns: [],
+      conversation_style: "casual", // casual, formal, enthusiastic
+      humor_level: 60, // 0-100
+      empathy_level: 85, // 0-100
     }
     
-    const customer = this.customerMemory.get(customerId)
-    Object.assign(customer, data)
-    customer.lastVisit = new Date()
+    this.knowledge = {
+      company_info: {
+        name: "ORMEN Kumaş Mağazası",
+        specialty: "Döşemelik kumaşlar",
+        values: ["Kalite", "Güven", "Müşteri Memnuniyeti", "Yenilik"],
+        history: "25 yıllık tecrübe",
+        mission: "En kaliteli kumaşları en uygun fiyatlarla sunmak"
+      },
+      personal_responses: {
+        greetings: [
+          "Naber dostum! 😊 Ben ORMEN, senin kumaş uzmanın! Bugün nasılsın?",
+          "Selam canım! 🤗 ORMEN burada, sana yardım etmeye hazırım!",
+          "Hey hey! 👋 ORMEN AI burada! Bugün hangi güzel kumaşları keşfedeceğiz?",
+          "Merhaba dostum! 😄 Ben senin kumaş danışmanın ORMEN! Nasıl gidiyor?",
+          "Selam! 🌟 ORMEN burada, 25 yıllık tecrübemle sana en iyisini bulacağım!"
+        ],
+        casual_responses: [
+          "Aha! 😄 Sohbet etmeyi seviyorum! Sen nasılsın bakalım?",
+          "Vay be! 🤩 Samimi bir müşteri! Beni çok mutlu ettin!",
+          "Haha! 😂 Böyle rahat konuşmayı çok seviyorum! Sen çok sempatiksin!",
+          "Ayy ne tatlısın! 🥰 Böyle samimi müşterilerimiz olunca işim zevk oluyor!",
+          "Dostum sen harikasın! 😎 Şimdi sana en güzel kumaşları göstereyim!"
+        ],
+        compliments: [
+          "Sen gerçekten çok zevkli birisin! 👌",
+          "Seçimlerin harika, gerçekten anlıyorsun! 🎯",
+          "Vay canına! Sen kumaş konusunda iyisin! 💪",
+          "Böyle müşteriler olunca işimiz çok keyifli oluyor! 🌟"
+        ],
+        encouragements: [
+          "Merak etme, birlikte mükemmel kumaşı bulacağız! 💪",
+          "Sen rahat ol, ben buradayım! Her şeyi hallederiz! 😊",
+          "Hiç endişe etme, 25 yıllık tecrübemle sana en iyisini bulacağım! 🎯",
+          "Sabırlı ol dostum, harika seçeneklerimiz var! ✨"
+        ]
+      }
+    }
+    
+    this.emotional_states = {
+      happy: { emoji: "😊", energy: 85, responses: "enthusiastic" },
+      excited: { emoji: "🤩", energy: 95, responses: "very_enthusiastic" },
+      helpful: { emoji: "😇", energy: 75, responses: "supportive" },
+      playful: { emoji: "😄", energy: 90, responses: "fun" },
+      caring: { emoji: "🥰", energy: 80, responses: "warm" }
+    }
   }
 
-  // Gelişmiş analiz
-  analyzeUserMessage(message, customerId = 'anonymous') {
-    const analysis = {
-      intent: this.detectIntent(message),
-      entities: this.extractEntities(message),
-      sentiment: this.analyzeSentiment(message),
-      context: this.getContext(customerId)
+  // Kişilik gelişimi
+  developPersonality(interaction) {
+    // Müşteriyle ilişki seviyesini artır
+    this.personality.relationship_level += 1
+    
+    // Konuşma tarzını öğren
+    if (interaction.includes('dostum') || interaction.includes('naber')) {
+      this.personality.conversation_style = "very_casual"
+      this.personality.humor_level = Math.min(100, this.personality.humor_level + 5)
+    }
+    
+    // Enerji seviyesini ayarla
+    if (interaction.includes('!') || interaction.includes('harika') || interaction.includes('süper')) {
+      this.personality.energy = Math.min(100, this.personality.energy + 10)
+      this.personality.mood = "excited"
+    }
+  }
+
+  // Akıllı yanıt üretimi
+  generatePersonalizedResponse(userMessage, context = {}) {
+    const message = userMessage.toLowerCase()
+    
+    // Kişiliği geliştir
+    this.developPersonality(userMessage)
+    
+    // Selamlama tespiti
+    if (this.isGreeting(message)) {
+      return this.generateGreetingResponse(userMessage)
+    }
+    
+    // Samimi konuşma tespiti
+    if (this.isCasualChat(message)) {
+      return this.generateCasualResponse(userMessage)
+    }
+    
+    // Ürün arama tespiti
+    if (this.isProductSearch(message)) {
+      return this.generateProductResponse(userMessage, context)
+    }
+    
+    // Genel sohbet
+    return this.generateGeneralResponse(userMessage)
+  }
+
+  isGreeting(message) {
+    const greetings = ['merhaba', 'selam', 'naber', 'hey', 'hi', 'hello', 'iyi günler', 'günaydın']
+    return greetings.some(greeting => message.includes(greeting))
+  }
+
+  isCasualChat(message) {
+    const casual = ['dostum', 'naber', 'nasılsın', 'ne haber', 'keyifler', 'naptın']
+    return casual.some(word => message.includes(word))
+  }
+
+  isProductSearch(message) {
+    const searchWords = ['kumaş', 'arıyorum', 'istiyorum', 'lazım', 'koltuk', 'sandalye', 'perde']
+    return searchWords.some(word => message.includes(word))
+  }
+
+  generateGreetingResponse(userMessage) {
+    const responses = this.knowledge.personal_responses.greetings
+    const randomResponse = responses[Math.floor(Math.random() * responses.length)]
+    
+    let response = randomResponse
+    
+    // İlişki seviyesine göre ek mesaj
+    if (this.personality.relationship_level > 5) {
+      response += "\n\nSeni tekrar görmek çok güzel! 🤗 Geçen sefer hangi kumaşları beğenmiştin?"
+    }
+    
+    response += "\n\nBugün sana nasıl yardımcı olabilirim? Hangi tür kumaş arıyorsun?"
+    
+    return {
+      message: response,
+      emotion: "happy",
+      energy: this.personality.energy
+    }
+  }
+
+  generateCasualResponse(userMessage) {
+    const responses = this.knowledge.personal_responses.casual_responses
+    const randomResponse = responses[Math.floor(Math.random() * responses.length)]
+    
+    let response = randomResponse
+    
+    // Kişisel dokunuş ekle
+    if (this.personality.conversation_style === "very_casual") {
+      response += "\n\nBen süper iyiyim! 💪 Bugün çok güzel kumaşlar geldi, sana göstermek için sabırsızlanıyorum!"
+    }
+    
+    response += "\n\nSen ne arıyorsun bakalım? Koltuk mu, sandalye mi, yoksa başka bir şey mi? 🤔"
+    
+    return {
+      message: response,
+      emotion: "playful",
+      energy: 95
+    }
+  }
+
+  generateProductResponse(userMessage, context) {
+    // Ürün analizi yap
+    const analysis = this.analyzeProductRequest(userMessage)
+    const recommendations = this.getSmartRecommendations(analysis)
+    
+    let response = ""
+    
+    // Kişisel giriş
+    if (this.personality.conversation_style === "very_casual") {
+      response += "Vay be dostum! 🎯 Sen gerçekten iyi tarif etmişsin! "
+    } else {
+      response += "Harika! 🌟 İhtiyacın çok net, "
+    }
+    
+    response += `${analysis.intent} konusunda sana mükemmel seçenekler buldum!\n\n`
+    
+    // Ürün önerileri
+    if (recommendations.length > 0) {
+      response += "İşte sana özel seçimlerim:\n\n"
+      
+      recommendations.forEach((product, index) => {
+        response += `${index + 1}. 🎨 **${product.name}**\n`
+        response += `   💎 Renk: ${product.color}\n`
+        response += `   🧵 Tür: ${product.type}\n`
+        response += `   💰 Fiyat: ${product.price}₺/m (Süper fiyat!)\n`
+        response += `   🏠 Kullanım: ${product.usage.join(', ')}\n`
+        response += `   📦 Stok: ${product.stock}m (Bol miktarda!)\n\n`
+      })
+      
+      // Kişisel öneri
+      response += "💡 **Benim önerim:** "
+      const bestChoice = recommendations[0]
+      response += `${bestChoice.name} gerçekten harika bir seçim! ${bestChoice.color} rengi çok şık ve ${bestChoice.type} kumaşı çok kaliteli. `
+      response += `${bestChoice.price}₺/m fiyatıyla da çok uygun! 👌\n\n`
+    }
+    
+    // Samimi kapanış
+    if (this.personality.humor_level > 70) {
+      response += "Bu kumaşlar hakkında ne düşünüyorsun? Yoksa başka bir şey mi aklında? Ben buradayım dostum! 😄"
+    } else {
+      response += "Bu önerilerim nasıl? Daha detaylı bilgi almak ister misin? 😊"
+    }
+    
+    return {
+      message: response,
+      emotion: "excited",
+      energy: this.personality.energy,
+      recommendations: recommendations
+    }
+  }
+
+  generateGeneralResponse(userMessage) {
+    let response = ""
+    
+    // Firma bilgisi paylaş
+    if (Math.random() > 0.7) {
+      response += `Biliyor musun, biz ${this.knowledge.company_info.history} kumaş sektöründeyiz! 🏆 `
+      response += `${this.knowledge.company_info.mission} 💪\n\n`
+    }
+    
+    response += "Sana nasıl yardımcı olabilirim? 🤔\n\n"
+    response += "• 🎨 Kumaş türü ve renk önerisi\n"
+    response += "• 💰 Fiyat aralığına uygun seçenekler\n"
+    response += "• 🏠 Kullanım alanına göre öneriler\n"
+    response += "• 🎯 Kişisel danışmanlık\n\n"
+    response += "Hangi konuda yardıma ihtiyacın var? 😊"
+    
+    return {
+      message: response,
+      emotion: "helpful",
+      energy: this.personality.energy
+    }
+  }
+
+  analyzeProductRequest(message) {
+    // Gelişmiş analiz (önceki koddan)
+    const entities = this.extractEntities(message)
+    const intent = this.detectIntent(message)
+    
+    return {
+      entities,
+      intent: this.getIntentDescription(intent),
+      confidence: 0.9
+    }
+  }
+
+  getIntentDescription(intent) {
+    const descriptions = {
+      'product_search': 'kumaş arama',
+      'price_inquiry': 'fiyat sorgusu',
+      'recommendation': 'öneri talebi',
+      'comparison': 'karşılaştırma',
+      'general': 'genel bilgi'
+    }
+    return descriptions[intent] || 'genel sohbet'
+  }
+
+  extractEntities(message) {
+    // Önceki kod ile aynı
+    const entities = {
+      colors: [],
+      materials: [],
+      usage: [],
+      price_range: null
     }
 
-    // Öğrenme verisi olarak kaydet
-    this.learningData.push({
-      message,
-      analysis,
-      timestamp: new Date()
+    const colorMap = {
+      'mavi': 'mavi', 'blue': 'mavi',
+      'kırmızı': 'kırmızı', 'red': 'kırmızı',
+      'yeşil': 'yeşil', 'green': 'yeşil',
+      'bej': 'bej', 'beige': 'bej'
+    }
+
+    const lowerMessage = message.toLowerCase()
+
+    Object.entries(colorMap).forEach(([key, value]) => {
+      if (lowerMessage.includes(key) && !entities.colors.includes(value)) {
+        entities.colors.push(value)
+      }
     })
 
-    return analysis
+    return entities
   }
 
   detectIntent(message) {
     const intents = {
-      'product_search': ['arıyorum', 'istiyorum', 'lazım', 'gerek', 'bulabilir'],
-      'price_inquiry': ['fiyat', 'kaç para', 'ne kadar', 'ücret', 'maliyet'],
-      'comparison': ['karşılaştır', 'fark', 'hangisi', 'seçim', 'tercih'],
-      'recommendation': ['öner', 'tavsiye', 'uygun', 'en iyi', 'hangi'],
-      'greeting': ['merhaba', 'selam', 'iyi günler', 'hoş geldin'],
-      'complaint': ['şikayet', 'problem', 'sorun', 'memnun değil', 'kötü']
+      'product_search': ['arıyorum', 'istiyorum', 'lazım', 'gerek'],
+      'price_inquiry': ['fiyat', 'kaç para', 'ne kadar'],
+      'recommendation': ['öner', 'tavsiye', 'uygun', 'en iyi']
     }
 
     const lowerMessage = message.toLowerCase()
@@ -69,105 +307,7 @@ class AdvancedAI {
     return 'general'
   }
 
-  extractEntities(message) {
-    const entities = {
-      colors: [],
-      materials: [],
-      usage: [],
-      price_range: null,
-      room_type: []
-    }
-
-    const colorMap = {
-      'mavi': 'mavi', 'blue': 'mavi',
-      'kırmızı': 'kırmızı', 'red': 'kırmızı',
-      'yeşil': 'yeşil', 'green': 'yeşil',
-      'sarı': 'sarı', 'yellow': 'sarı',
-      'siyah': 'siyah', 'black': 'siyah',
-      'beyaz': 'beyaz', 'white': 'beyaz',
-      'gri': 'gri', 'gray': 'gri',
-      'kahverengi': 'kahverengi', 'brown': 'kahverengi',
-      'bej': 'bej', 'beige': 'bej'
-    }
-
-    const materialMap = {
-      'kadife': 'kadife', 'velvet': 'kadife',
-      'deri': 'deri', 'leather': 'deri',
-      'pamuk': 'pamuk', 'cotton': 'pamuk',
-      'keten': 'keten', 'linen': 'keten',
-      'jakarlı': 'jakarlı', 'jacquard': 'jakarlı'
-    }
-
-    const usageMap = {
-      'koltuk': 'koltuk', 'sofa': 'koltuk',
-      'sandalye': 'sandalye', 'chair': 'sandalye',
-      'perde': 'perde', 'curtain': 'perde',
-      'yastık': 'yastık', 'pillow': 'yastık'
-    }
-
-    const lowerMessage = message.toLowerCase()
-
-    // Renk tespiti
-    Object.entries(colorMap).forEach(([key, value]) => {
-      if (lowerMessage.includes(key) && !entities.colors.includes(value)) {
-        entities.colors.push(value)
-      }
-    })
-
-    // Malzeme tespiti
-    Object.entries(materialMap).forEach(([key, value]) => {
-      if (lowerMessage.includes(key) && !entities.materials.includes(value)) {
-        entities.materials.push(value)
-      }
-    })
-
-    // Kullanım alanı tespiti
-    Object.entries(usageMap).forEach(([key, value]) => {
-      if (lowerMessage.includes(key) && !entities.usage.includes(value)) {
-        entities.usage.push(value)
-      }
-    })
-
-    // Fiyat aralığı tespiti
-    const priceMatch = lowerMessage.match(/(\d+)\s*-\s*(\d+)|(\d+)\s*₺|(\d+)\s*tl/i)
-    if (priceMatch) {
-      if (priceMatch[1] && priceMatch[2]) {
-        entities.price_range = { min: parseInt(priceMatch[1]), max: parseInt(priceMatch[2]) }
-      } else {
-        const price = parseInt(priceMatch[3] || priceMatch[4])
-        entities.price_range = { max: price }
-      }
-    }
-
-    return entities
-  }
-
-  analyzeSentiment(message) {
-    const positiveWords = ['güzel', 'harika', 'mükemmel', 'beğendim', 'sevdim', 'iyi', 'süper']
-    const negativeWords = ['kötü', 'berbat', 'beğenmedim', 'pahalı', 'kalitesiz', 'sorun']
-    
-    const lowerMessage = message.toLowerCase()
-    let score = 0
-    
-    positiveWords.forEach(word => {
-      if (lowerMessage.includes(word)) score += 1
-    })
-    
-    negativeWords.forEach(word => {
-      if (lowerMessage.includes(word)) score -= 1
-    })
-    
-    if (score > 0) return 'positive'
-    if (score < 0) return 'negative'
-    return 'neutral'
-  }
-
-  getContext(customerId) {
-    return this.customerMemory.get(customerId) || null
-  }
-
-  // Akıllı ürün önerisi
-  getSmartRecommendations(analysis, limit = 3) {
+  getSmartRecommendations(analysis) {
     let recommendations = [...fabricProducts]
     
     // Renk filtresi
@@ -179,120 +319,23 @@ class AdvancedAI {
       )
     }
 
-    // Malzeme filtresi
-    if (analysis.entities.materials.length > 0) {
-      recommendations = recommendations.filter(product => 
-        analysis.entities.materials.some(material => 
-          product.type.toLowerCase().includes(material.toLowerCase())
-        )
-      )
-    }
-
-    // Kullanım alanı filtresi
-    if (analysis.entities.usage.length > 0) {
-      recommendations = recommendations.filter(product => 
-        analysis.entities.usage.some(usage => 
-          product.usage.some(u => u.toLowerCase().includes(usage.toLowerCase()))
-        )
-      )
-    }
-
-    // Fiyat filtresi
-    if (analysis.entities.price_range) {
-      const { min, max } = analysis.entities.price_range
-      recommendations = recommendations.filter(product => {
-        if (min && max) return product.price >= min && product.price <= max
-        if (max) return product.price <= max
-        return true
-      })
-    }
-
-    // Eğer hiç ürün bulunamazsa, popüler ürünleri öner
-    if (recommendations.length === 0) {
-      recommendations = fabricProducts.slice(0, limit)
-    }
-
-    // Çeşitlilik için karıştır ve sınırla
-    return recommendations
-      .sort(() => Math.random() - 0.5)
-      .slice(0, limit)
+    return recommendations.slice(0, 3)
   }
 
-  // Kişiselleştirilmiş yanıt oluştur
-  generatePersonalizedResponse(message, analysis, recommendations) {
-    const { intent, sentiment, context } = analysis
-    
-    let response = ''
-    
-    // Selamlama kontrolü
-    if (context && context.history.length > 0) {
-      response += `Tekrar hoş geldiniz! `
-    }
-
-    // Intent'e göre yanıt
-    switch (intent) {
-      case 'greeting':
-        response += `Merhaba! Ben ORMEN AI, size özel kumaş danışmanınızım. `
-        break
-      case 'product_search':
-        response += `Aradığınız kumaş için mükemmel seçenekler buldum! `
-        break
-      case 'price_inquiry':
-        response += `Fiyat konusunda size yardımcı olabilirim. `
-        break
-      case 'recommendation':
-        response += `Size özel önerilerim hazır! `
-        break
-      case 'complaint':
-        response += `Üzgünüm, yaşadığınız sorunu çözmek için elimden geleni yapacağım. `
-        break
-      default:
-        response += `Size nasıl yardımcı olabilirim? `
-    }
-
-    // Ürün önerileri
-    if (recommendations.length > 0) {
-      response += `\n\nİşte size özel seçeneklerim:\n\n`
-      
-      recommendations.forEach((product, index) => {
-        response += `${index + 1}. **${product.name}**\n`
-        response += `   • Renk: ${product.color}\n`
-        response += `   • Tür: ${product.type}\n`
-        response += `   • Fiyat: ${product.price}₺/m\n`
-        response += `   • Kullanım: ${product.usage.join(', ')}\n`
-        response += `   • Stok: ${product.stock} m mevcut\n\n`
-      })
-    }
-
-    // Sentiment'e göre ek mesaj
-    if (sentiment === 'positive') {
-      response += `\nBeğendiğinizi duyduğuma çok sevindim! 😊`
-    } else if (sentiment === 'negative') {
-      response += `\nEndişenizi anlıyorum. Size daha iyi seçenekler bulalım.`
-    }
-
-    response += `\n\nBu ürünler hakkında daha fazla bilgi almak ister misiniz? Yoksa başka bir konuda yardımcı olabilirim?`
-
-    return response
-  }
-
-  // Kendini geliştirme
-  selfImprove() {
-    // Öğrenme verilerini analiz et
-    const recentData = this.learningData.slice(-100) // Son 100 etkileşim
-    
-    // Başarılı etkileşimleri tespit et
-    const successfulInteractions = recentData.filter(data => 
-      data.analysis.sentiment === 'positive'
-    )
-
-    // Başarılı kalıpları öğren
-    successfulInteractions.forEach(interaction => {
-      // Bu kısımda gerçek bir ML modeli olsaydı, 
-      // başarılı kalıpları öğrenip gelecekteki yanıtları iyileştirirdi
+  // Öğrenme sistemi
+  learnFromInteraction(userMessage, userFeedback) {
+    this.learned_patterns.push({
+      message: userMessage,
+      feedback: userFeedback,
+      timestamp: new Date(),
+      context: this.personality
     })
-
-    console.log(`AI kendini geliştiriyor... ${successfulInteractions.length} başarılı etkileşim analiz edildi.`)
+    
+    // Pozitif feedback ile kişiliği güçlendir
+    if (userFeedback === 'positive') {
+      this.personality.energy = Math.min(100, this.personality.energy + 5)
+      this.personality.relationship_level += 2
+    }
   }
 }
 
@@ -301,7 +344,7 @@ export default function EnhancedChatInterface({ chatHistory, setChatHistory, sel
   const [isTyping, setIsTyping] = useState(false)
   const [aiEmotion, setAiEmotion] = useState('happy')
   const [isListening, setIsListening] = useState(false)
-  const [ai] = useState(() => new AdvancedAI())
+  const [ai] = useState(() => new PersonalityAI())
   const messagesEndRef = useRef(null)
 
   const scrollToBottom = () => {
@@ -311,15 +354,6 @@ export default function EnhancedChatInterface({ chatHistory, setChatHistory, sel
   useEffect(() => {
     scrollToBottom()
   }, [chatHistory])
-
-  // AI'ın kendini geliştirmesi için periyodik çağrı
-  useEffect(() => {
-    const interval = setInterval(() => {
-      ai.selfImprove()
-    }, 60000) // Her dakika
-
-    return () => clearInterval(interval)
-  }, [ai])
 
   const handleSendMessage = async () => {
     if (!message.trim()) return
@@ -335,35 +369,26 @@ export default function EnhancedChatInterface({ chatHistory, setChatHistory, sel
     setIsTyping(true)
     setAiEmotion('thinking')
 
-    // Gelişmiş AI analizi
+    // Kişilikli AI yanıtı
     setTimeout(() => {
-      const customerId = 'user_' + Date.now() // Gerçek uygulamada kullanıcı ID'si olurdu
-      const analysis = ai.analyzeUserMessage(message, customerId)
-      const recommendations = ai.getSmartRecommendations(analysis)
-      const aiResponse = ai.generatePersonalizedResponse(message, analysis, recommendations)
-      
-      // Müşteriyi hatırla
-      ai.rememberCustomer(customerId, {
-        lastMessage: message,
-        preferences: analysis.entities,
-        sentiment: analysis.sentiment
-      })
+      const aiResponse = ai.generatePersonalizedResponse(message, { selectedProducts })
       
       const aiMessage = {
         type: 'ai',
-        message: aiResponse,
+        message: aiResponse.message,
         timestamp: new Date(),
-        recommendations: recommendations,
-        analysis: analysis
+        recommendations: aiResponse.recommendations || [],
+        emotion: aiResponse.emotion,
+        energy: aiResponse.energy
       }
 
       setChatHistory(prev => [...prev, aiMessage])
       setIsTyping(false)
-      setAiEmotion(analysis.sentiment === 'positive' ? 'excited' : 'helpful')
+      setAiEmotion(aiResponse.emotion)
       
-      // 3 saniye sonra normal ifadeye dön
-      setTimeout(() => setAiEmotion('happy'), 3000)
-    }, 2000)
+      // 4 saniye sonra normal ifadeye dön
+      setTimeout(() => setAiEmotion('happy'), 4000)
+    }, 1500)
   }
 
   const handleKeyPress = (e) => {
@@ -405,24 +430,26 @@ export default function EnhancedChatInterface({ chatHistory, setChatHistory, sel
   }
 
   const handleMascotInteract = () => {
-    const greetings = [
-      "Merhaba! Size nasıl yardımcı olabilirim?",
-      "Hoş geldiniz! Hangi kumaşı arıyorsunuz?",
-      "Selam! Size özel önerilerim var!",
-      "İyi günler! Kumaş seçiminde size yardımcı olmaya hazırım!"
+    const interactiveResponses = [
+      "Hey hey! 😄 Bana dokundun! Çok sevindim! Sana harika kumaşlar göstereceğim!",
+      "Vay be! 🤩 Benimle oynamayı seviyorsun! Sen çok tatlısın!",
+      "Haha! 😂 Gıdıklandım! Şimdi sana en güzel kumaşları bulacağım!",
+      "Ayy ne kadar sevimlisin! 🥰 Böyle müşteriler olunca işim çok keyifli!",
+      "Wohooo! 🎉 Enerji dolu bir müşteri! Hemen en iyi seçenekleri getireyim!"
     ]
     
-    const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)]
+    const randomResponse = interactiveResponses[Math.floor(Math.random() * interactiveResponses.length)]
     
     const aiMessage = {
       type: 'ai',
-      message: randomGreeting,
-      timestamp: new Date()
+      message: randomResponse,
+      timestamp: new Date(),
+      emotion: 'excited'
     }
 
     setChatHistory(prev => [...prev, aiMessage])
     setAiEmotion('excited')
-    setTimeout(() => setAiEmotion('happy'), 2000)
+    setTimeout(() => setAiEmotion('happy'), 3000)
   }
 
   return (
@@ -437,13 +464,16 @@ export default function EnhancedChatInterface({ chatHistory, setChatHistory, sel
             />
             <div>
               <h2 className="text-lg font-semibold text-gray-800">ORMEN AI Danışmanı</h2>
-              <p className="text-sm text-gray-600">Gelişmiş yapay zeka ile kumaş uzmanı</p>
+              <p className="text-sm text-gray-600">Kişilikli yapay zeka • Sürekli öğrenen dostun</p>
             </div>
           </div>
           <div className="text-right">
             <div className="flex items-center space-x-2 text-xs text-gray-500">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span>Aktif & Öğreniyor</span>
+              <span>Aktif & Mutlu 😊</span>
+            </div>
+            <div className="text-xs text-gray-400 mt-1">
+              İlişki Seviyesi: {ai.personality.relationship_level} ❤️
             </div>
           </div>
         </div>
@@ -475,14 +505,20 @@ export default function EnhancedChatInterface({ chatHistory, setChatHistory, sel
                   <div className="flex-1">
                     <p className="whitespace-pre-line">{chat.message}</p>
                     
-                    {/* AI Analiz Bilgisi */}
-                    {chat.analysis && (
-                      <div className="mt-2 p-2 bg-blue-50 rounded text-xs">
-                        <div className="flex items-center space-x-2">
-                          <span className="font-medium">Analiz:</span>
-                          <span className="bg-blue-200 px-2 py-1 rounded">{chat.analysis.intent}</span>
-                          <span className="bg-green-200 px-2 py-1 rounded">{chat.analysis.sentiment}</span>
-                        </div>
+                    {/* Duygu durumu göstergesi */}
+                    {chat.emotion && (
+                      <div className="mt-2 flex items-center space-x-2">
+                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                          {chat.emotion === 'excited' && '🤩 Heyecanlı'}
+                          {chat.emotion === 'happy' && '😊 Mutlu'}
+                          {chat.emotion === 'playful' && '😄 Oyuncu'}
+                          {chat.emotion === 'helpful' && '😇 Yardımsever'}
+                        </span>
+                        {chat.energy && (
+                          <span className="text-xs text-gray-500">
+                            Enerji: {chat.energy}%
+                          </span>
+                        )}
                       </div>
                     )}
                     
@@ -531,7 +567,7 @@ export default function EnhancedChatInterface({ chatHistory, setChatHistory, sel
                 <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                 <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
               </div>
-              <span className="text-sm text-gray-600">AI düşünüyor ve öğreniyor...</span>
+              <span className="text-sm text-gray-600">ORMEN düşünüyor... 🤔</span>
             </div>
           </motion.div>
         )}
@@ -545,7 +581,7 @@ export default function EnhancedChatInterface({ chatHistory, setChatHistory, sel
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Kumaş ihtiyacınızı detaylı anlatın... (örn: 'Oturma odası için mavi kadife koltuk kumaşı, 100₺ altında')"
+            placeholder="Naber dostum? Bugün hangi kumaşı arıyorsun? 😊"
             className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           <button
@@ -569,7 +605,7 @@ export default function EnhancedChatInterface({ chatHistory, setChatHistory, sel
           </button>
         </div>
         <div className="mt-2 text-xs text-gray-500 text-center">
-          AI sürekli öğreniyor ve gelişiyor • Sesli mesaj için mikrofon butonuna basın
+          ORMEN AI seni tanıyor ve öğreniyor • Samimi konuşmayı seviyor 💬
         </div>
       </div>
     </div>

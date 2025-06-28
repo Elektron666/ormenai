@@ -1,4 +1,6 @@
 // Gerçekçi ve Profesyonel AI Sistemi
+import { fabricProducts } from '../data/products.js'
+
 export class ProfessionalAI {
   constructor() {
     this.knowledge = {
@@ -317,7 +319,6 @@ export class ProfessionalAI {
 
   getProductRecommendations(analysis) {
     // Basit ürün önerisi algoritması
-    const { fabricProducts } = require('../data/products')
     let recommendations = [...fabricProducts]
     
     // Renk filtresi

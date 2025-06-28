@@ -1,45 +1,54 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import ChatInterface from './components/ChatInterface'
+import ProductCatalog from './components/ProductCatalog'
 import Header from './components/Header'
-import Hero from './components/Hero'
-import Features from './components/Features'
-import Testimonials from './components/Testimonials'
-import Pricing from './components/Pricing'
-import CTA from './components/CTA'
-import Newsletter from './components/Newsletter'
-import Footer from './components/Footer'
+import './App.css'
 
 function App() {
-  const [scrolled, setScrolled] = useState(false)
-  
-  useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 20
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled)
-      }
+  const [selectedProducts, setSelectedProducts] = useState([])
+  const [chatHistory, setChatHistory] = useState([
+    {
+      type: 'ai',
+      message: 'Merhaba! Ben ORMEN AI, döşemelik kumaş uzmanınızım. Size nasıl yardımcı olabilirim? Hangi tür döşeme için kumaş arıyorsunuz?',
+      timestamp: new Date()
     }
-    
-    window.addEventListener('scroll', handleScroll)
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [scrolled])
-  
+  ])
+
   return (
-    <>
-      <Header scrolled={scrolled} />
-      <main>
-        <Hero />
-        <Features />
-        <Testimonials />
-        <Pricing />
-        <CTA />
-        <Newsletter />
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <main className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Sol taraf - Chat Interface */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <ChatInterface 
+              chatHistory={chatHistory}
+              setChatHistory={setChatHistory}
+              selectedProducts={selectedProducts}
+              setSelectedProducts={setSelectedProducts}
+            />
+          </motion.div>
+
+          {/* Sağ taraf - Product Catalog */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <ProductCatalog 
+              selectedProducts={selectedProducts}
+              setSelectedProducts={setSelectedProducts}
+            />
+          </motion.div>
+        </div>
       </main>
-      <Footer />
-    </>
+    </div>
   )
 }
 

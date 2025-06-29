@@ -186,6 +186,110 @@ export class MegaAIEngine {
     return analysis
   }
 
+  // Missing method - assessQueryComplexity
+  async assessQueryComplexity(query) {
+    const words = query.split(' ').length
+    const sentences = query.split(/[.!?]+/).length
+    const avgWordsPerSentence = words / sentences
+    const hasSpecialTerms = /kumaş|döşeme|tekstil|fabric|upholstery/.test(query.toLowerCase())
+    const hasNumbers = /\d+/.test(query)
+    const hasComparisons = /karşılaştır|compare|vs|veya|or/.test(query.toLowerCase())
+    
+    let complexityScore = 0
+    
+    // Word count complexity
+    if (words > 20) complexityScore += 2
+    else if (words > 10) complexityScore += 1
+    
+    // Sentence structure complexity
+    if (avgWordsPerSentence > 15) complexityScore += 2
+    else if (avgWordsPerSentence > 8) complexityScore += 1
+    
+    // Domain-specific terms
+    if (hasSpecialTerms) complexityScore += 1
+    
+    // Numerical data
+    if (hasNumbers) complexityScore += 1
+    
+    // Comparison requests
+    if (hasComparisons) complexityScore += 2
+    
+    // Multiple questions
+    const questionCount = (query.match(/\?/g) || []).length
+    if (questionCount > 1) complexityScore += questionCount
+    
+    if (complexityScore >= 5) return 'high'
+    if (complexityScore >= 3) return 'medium'
+    return 'low'
+  }
+
+  // Missing method - calculatePriority
+  async calculatePriority(query, context) {
+    const lowerQuery = query.toLowerCase()
+    let priority = 'medium' // default
+    
+    // High priority indicators
+    if (lowerQuery.includes('acil') || lowerQuery.includes('urgent') || lowerQuery.includes('hemen')) {
+      priority = 'high'
+    }
+    
+    // Business hours context
+    const now = new Date()
+    const isBusinessHours = now.getHours() >= 9 && now.getHours() <= 18
+    const isWeekday = now.getDay() >= 1 && now.getDay() <= 5
+    
+    if (isBusinessHours && isWeekday) {
+      // During business hours, customer service queries get higher priority
+      if (lowerQuery.includes('müşteri') || lowerQuery.includes('customer') || lowerQuery.includes('şikayet')) {
+        priority = 'high'
+      }
+    }
+    
+    // Technical or complex queries get medium-high priority
+    if (lowerQuery.includes('teknik') || lowerQuery.includes('technical') || lowerQuery.includes('problem')) {
+      priority = priority === 'high' ? 'high' : 'medium-high'
+    }
+    
+    return priority
+  }
+
+  // Missing method - enhanceCachedResponse
+  async enhanceCachedResponse(cachedResult) {
+    // Add timestamp and freshness info to cached response
+    return {
+      ...cachedResult,
+      cached: true,
+      cacheTimestamp: cachedResult.timestamp,
+      freshness: this.calculateFreshness(cachedResult.timestamp),
+      enhanced: true
+    }
+  }
+
+  // Missing method - calculateFreshness
+  calculateFreshness(timestamp) {
+    const now = Date.now()
+    const age = now - timestamp
+    const hours = age / (1000 * 60 * 60)
+    
+    if (hours < 1) return 'very_fresh'
+    if (hours < 6) return 'fresh'
+    if (hours < 24) return 'moderate'
+    return 'stale'
+  }
+
+  // Missing method - generateSecurityResponse
+  generateSecurityResponse(securityCheck) {
+    return {
+      message: "🚨 **Güvenlik Uyarısı**\n\nGüvenlik nedeniyle bu sorgu işlenemiyor. Lütfen farklı bir şekilde ifade edin.",
+      recommendations: [],
+      insights: {},
+      confidence: 0,
+      error: true,
+      securityBlocked: true,
+      riskLevel: securityCheck.risk_level
+    }
+  }
+
   // VERİ TOPLAMA SİSTEMİ
   async gatherAllData(query, analysis) {
     console.log("📊 Veri toplama başlatılıyor...")
@@ -284,11 +388,83 @@ export class MegaAIEngine {
       confidence: await this.calculateConfidenceScore(data, analysis),
       
       // Özet oluşturma
-      summary: await this.createProcessingSummary(data, analysis)
+      summary: await this.createProcessingSummary(data, analysis),
+      
+      // Add data reference for other methods
+      data: data
     }
     
     console.log("✅ AI işleme tamamlandı")
     return processing
+  }
+
+  // Missing method - generateSmartRecommendations
+  async generateSmartRecommendations(data, analysis) {
+    const recommendations = []
+    
+    // Fabric-based recommendations
+    if (data.fabric && data.fabric.length > 0) {
+      const topFabric = data.fabric[0]
+      recommendations.push({
+        type: 'product',
+        title: `${topFabric.name} Önerisi`,
+        description: `${topFabric.type} kumaş, ${topFabric.color} renk seçeneği ile ideal`,
+        priority: 'high',
+        price: topFabric.price
+      })
+    }
+    
+    // Weather-based recommendations
+    if (data.weather) {
+      if (data.weather.temperature < 15) {
+        recommendations.push({
+          type: 'seasonal',
+          title: 'Soğuk Hava Önerisi',
+          description: 'Kalın dokulu kumaşlar tercih edilmelidir',
+          priority: 'medium'
+        })
+      }
+    }
+    
+    // Market-based recommendations
+    if (data.market && data.market.trend === 'Yükseliş') {
+      recommendations.push({
+        type: 'market',
+        title: 'Piyasa Fırsatı',
+        description: 'Fiyat artışı öncesi alım yapılabilir',
+        priority: 'high'
+      })
+    }
+    
+    return recommendations
+  }
+
+  // Missing method - calculateConfidenceScore
+  async calculateConfidenceScore(data, analysis) {
+    let confidence = 0.5 // Base confidence
+    
+    // Data availability
+    const dataSourceCount = Object.keys(data).length
+    confidence += Math.min(0.3, dataSourceCount * 0.05)
+    
+    // Analysis quality
+    if (analysis.complexity === 'low') confidence += 0.1
+    if (analysis.intent && analysis.intent.length > 0) confidence += 0.1
+    if (analysis.entities && Object.keys(analysis.entities).length > 0) confidence += 0.1
+    
+    return Math.min(0.95, confidence)
+  }
+
+  // Missing method - createProcessingSummary
+  async createProcessingSummary(data, analysis) {
+    return {
+      dataSourcesUsed: Object.keys(data).length,
+      analysisComplexity: analysis.complexity,
+      intentDetected: analysis.intent,
+      entitiesFound: analysis.entities,
+      processingTime: Date.now(),
+      confidence: await this.calculateConfidenceScore(data, analysis)
+    }
   }
 
   // MEGA YANIT ÜRETİMİ
@@ -466,6 +642,187 @@ ${await this.getWeatherForecast()}`
     
     response += "💡 **Yatırım Önerileri:**\n"
     response += await this.generateInvestmentAdvice(processing, analysis)
+    
+    return {
+      message: response,
+      recommendations: processing.recommendations || [],
+      insights: processing.summary || {}
+    }
+  }
+
+  // Missing response generation methods
+  async generateTrendAnalysisResponse(processing, analysis) {
+    const { data } = processing
+    
+    let response = "📈 **Trend Analizi Raporu**\n\n"
+    
+    if (data.trends) {
+      response += "🔍 **Tespit Edilen Trendler:**\n"
+      data.trends.forEach(trend => {
+        response += `• **${trend.name}**: ${trend.direction} (${trend.strength})\n`
+        response += `  Zaman dilimi: ${trend.timeframe}\n`
+        response += `  Değişim oranı: %${trend.percentage}\n\n`
+      })
+    }
+    
+    if (data.social) {
+      response += "📱 **Sosyal Medya Trendleri:**\n"
+      response += `• Bahsedilme sayısı: ${data.social.mentions}\n`
+      response += `• Genel duygu: ${data.social.sentiment}\n`
+      response += `• Etkileşim oranı: %${data.social.engagement}\n\n`
+    }
+    
+    response += "💡 **Trend Önerileri:**\n"
+    response += "Bu trendleri takip ederek pazarda öne geçebilirsiniz."
+    
+    return {
+      message: response,
+      recommendations: processing.recommendations || [],
+      insights: processing.summary || {}
+    }
+  }
+
+  async generateKnowledgeResponse(processing, analysis) {
+    const { data } = processing
+    
+    let response = "📚 **Bilgi Bankası Yanıtı**\n\n"
+    
+    if (data.knowledge) {
+      response += `${data.knowledge}\n\n`
+    }
+    
+    if (data.internet && data.internet.length > 0) {
+      response += "🌐 **Ek Bilgiler:**\n"
+      data.internet.slice(0, 2).forEach(result => {
+        response += `• ${result.summary}\n`
+      })
+      response += "\n"
+    }
+    
+    response += "💡 **Öneriler:**\n"
+    response += "Daha detaylı bilgi için spesifik sorular sorabilirsiniz."
+    
+    return {
+      message: response,
+      recommendations: processing.recommendations || [],
+      insights: processing.summary || {}
+    }
+  }
+
+  async generateProductRecommendationResponse(processing, analysis) {
+    const { data } = processing
+    
+    let response = "🛍️ **Ürün Önerileri**\n\n"
+    
+    if (data.fabric && data.fabric.length > 0) {
+      response += "🧵 **Önerilen Kumaşlar:**\n"
+      data.fabric.slice(0, 5).forEach((fabric, index) => {
+        response += `${index + 1}. **${fabric.name}**\n`
+        response += `   • Tür: ${fabric.type}\n`
+        response += `   • Renk: ${fabric.color}\n`
+        response += `   • Fiyat: ${fabric.price}₺/m\n`
+        response += `   • Stok: ${fabric.stock}m\n`
+        response += `   • Kullanım: ${fabric.usage.join(', ')}\n\n`
+      })
+    }
+    
+    if (processing.recommendations && processing.recommendations.length > 0) {
+      response += "💡 **AI Önerileri:**\n"
+      processing.recommendations.forEach(rec => {
+        response += `• ${rec.title}: ${rec.description}\n`
+      })
+    }
+    
+    return {
+      message: response,
+      recommendations: processing.recommendations || [],
+      insights: processing.summary || {}
+    }
+  }
+
+  async generateCareInstructionsResponse(processing, analysis) {
+    const { data } = processing
+    
+    let response = "🧽 **Kumaş Bakım Rehberi**\n\n"
+    
+    response += "📋 **Genel Bakım Kuralları:**\n"
+    response += "• Düzenli toz alma ve vakumlama\n"
+    response += "• Leke oluşur oluşmaz temizleme\n"
+    response += "• Direkt güneş ışığından koruma\n"
+    response += "• Düzenli havalandırma\n\n"
+    
+    if (data.knowledge && data.knowledge.includes('bakım')) {
+      response += `📚 **Uzman Tavsiyeleri:**\n${data.knowledge}\n\n`
+    }
+    
+    response += "⚠️ **Dikkat Edilmesi Gerekenler:**\n"
+    response += "• Kimyasal temizlik ürünleri kullanmadan önce test edin\n"
+    response += "• Aşırı nem ve ısıdan kaçının\n"
+    response += "• Profesyonel temizlik periyodik olarak yaptırın\n"
+    
+    return {
+      message: response,
+      recommendations: processing.recommendations || [],
+      insights: processing.summary || {}
+    }
+  }
+
+  async generatePriceAnalysisResponse(processing, analysis) {
+    const { data } = processing
+    
+    let response = "💰 **Fiyat Analizi Raporu**\n\n"
+    
+    if (data.market) {
+      response += "📊 **Piyasa Fiyatları:**\n"
+      response += `• Ortalama fiyat: ${data.market.averagePrice}₺/m\n`
+      response += `• Günlük değişim: %${data.market.dailyChange}\n`
+      response += `• Trend: ${data.market.trend}\n\n`
+    }
+    
+    if (data.fabric && data.fabric.length > 0) {
+      const prices = data.fabric.map(f => f.price)
+      const minPrice = Math.min(...prices)
+      const maxPrice = Math.max(...prices)
+      const avgPrice = prices.reduce((sum, price) => sum + price, 0) / prices.length
+      
+      response += "💵 **Ürün Fiyat Aralığı:**\n"
+      response += `• En düşük: ${minPrice}₺/m\n`
+      response += `• En yüksek: ${maxPrice}₺/m\n`
+      response += `• Ortalama: ${avgPrice.toFixed(0)}₺/m\n\n`
+    }
+    
+    response += "📈 **Fiyat Önerileri:**\n"
+    response += "Mevcut piyasa koşullarında orta segment ürünler en uygun seçenek."
+    
+    return {
+      message: response,
+      recommendations: processing.recommendations || [],
+      insights: processing.summary || {}
+    }
+  }
+
+  async generateGeneralResponse(processing, analysis) {
+    const { data } = processing
+    
+    let response = "🤖 **ORMEN AI Asistanı**\n\n"
+    
+    if (data.knowledge) {
+      response += `${data.knowledge}\n\n`
+    } else if (data.internet && data.internet.length > 0) {
+      response += "🌐 **Araştırma Sonuçları:**\n"
+      data.internet.slice(0, 2).forEach(result => {
+        response += `• ${result.summary}\n`
+      })
+      response += "\n"
+    } else {
+      response += "Sorunuzla ilgili bilgi toplamaya devam ediyorum. Daha spesifik sorular sorarak size daha iyi yardımcı olabilirim.\n\n"
+    }
+    
+    response += "💡 **Nasıl Yardımcı Olabilirim:**\n"
+    response += "• Kumaş özellikleri ve önerileri\n"
+    response += "• Bakım talimatları\n"
+    response += "• Fiyat karşılaştırmaları\n"
+    response += "• Trend analizleri\n"
     
     return {
       message: response,
@@ -671,6 +1028,23 @@ ${await this.getWeatherForecast()}`
     return advice.join(' ') || "Mevcut veriler ışığında en uygun seçenekleri değerlendirin."
   }
 
+  async generateInvestmentAdvice(processing, analysis) {
+    let advice = "Mevcut piyasa koşulları değerlendirildiğinde:\n"
+    
+    if (processing.data.market) {
+      if (processing.data.market.trend === 'Yükseliş') {
+        advice += "• Yükseliş trendinde olan ürünlere yatırım yapılabilir\n"
+      } else if (processing.data.market.trend === 'Düşüş') {
+        advice += "• Düşüş trendinde dikkatli olunmalı, fırsat kollanmalı\n"
+      }
+    }
+    
+    advice += "• Çeşitlendirme stratejisi benimsenmelidir\n"
+    advice += "• Uzun vadeli perspektif önemlidir"
+    
+    return advice
+  }
+
   getWeatherBasedFabricAdvice(weather) {
     if (weather.condition === 'yağmurlu') {
       return "☔ Yağmurlu havada su geçirmez ve kolay temizlenebilir kumaşlar tercih edilmelidir. Mikrofiber ve suni deri ideal seçeneklerdir."
@@ -681,6 +1055,82 @@ ${await this.getWeatherForecast()}`
     } else {
       return "🌤️ Bu hava koşulları için çoğu kumaş türü uygundur. Kişisel tercihinize göre seçim yapabilirsiniz."
     }
+  }
+
+  // Missing weather-related methods
+  getWeatherTrendAnalysis(weather) {
+    return `Mevcut ${weather.condition} hava koşulları ve ${weather.temperature}°C sıcaklık, kumaş seçiminde önemli faktörlerdir.`
+  }
+
+  getIndoorRecommendations(weather) {
+    if (weather.humidity > 70) {
+      return "Yüksek nem oranı nedeniyle iç mekanlarda havalandırma önemlidir."
+    }
+    return "İç mekan konfor koşulları uygundur."
+  }
+
+  async getWeatherForecast() {
+    return "Önümüzdeki günlerde benzer hava koşulları beklenmektedir."
+  }
+
+  getWeatherBasedRecommendations(weather) {
+    const recommendations = []
+    
+    if (weather.temperature < 15) {
+      recommendations.push({
+        type: 'seasonal',
+        title: 'Soğuk Hava Uyarısı',
+        description: 'Kalın kumaşlar tercih edilmelidir'
+      })
+    }
+    
+    if (weather.humidity > 70) {
+      recommendations.push({
+        type: 'humidity',
+        title: 'Nem Uyarısı',
+        description: 'Nefes alabilir kumaşlar önerilir'
+      })
+    }
+    
+    return recommendations
+  }
+
+  analyzeWeatherImpact(weather) {
+    return {
+      temperature_impact: weather.temperature < 15 ? 'high' : 'low',
+      humidity_impact: weather.humidity > 70 ? 'high' : 'low',
+      overall_impact: 'moderate'
+    }
+  }
+
+  getSeasonalAdvice(weather) {
+    const month = new Date().getMonth()
+    if (month >= 11 || month <= 1) {
+      return "Kış aylarında kalın ve ısı tutan kumaşlar tercih edilmelidir."
+    } else if (month >= 5 && month <= 7) {
+      return "Yaz aylarında hafif ve nefes alabilir kumaşlar ideal."
+    }
+    return "Mevsim geçişlerinde orta kalınlıkta kumaşlar uygundur."
+  }
+
+  calculateComfortIndex(weather) {
+    let comfort = 50 // Base comfort
+    
+    // Temperature comfort
+    if (weather.temperature >= 18 && weather.temperature <= 24) {
+      comfort += 20
+    } else if (weather.temperature >= 15 && weather.temperature <= 27) {
+      comfort += 10
+    }
+    
+    // Humidity comfort
+    if (weather.humidity >= 40 && weather.humidity <= 60) {
+      comfort += 15
+    } else if (weather.humidity >= 30 && weather.humidity <= 70) {
+      comfort += 5
+    }
+    
+    return Math.min(100, comfort)
   }
 
   generateErrorResponse(error, sessionId) {

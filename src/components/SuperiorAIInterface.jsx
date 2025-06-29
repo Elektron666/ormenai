@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { 
   HiPaperAirplane, HiUser, HiSparkles, HiMicrophone, HiStop, 
   HiLightBulb, HiGlobe, HiDatabase, HiChip, HiBeaker, HiCog,
-  HiShieldCheck, HiTrendingUp, HiClock, HiChatAlt2
+  HiShieldCheck, HiTrendingUp, HiClock, HiChatAlt2, HiChartBar
 } from 'react-icons/hi'
 import MegaAIEngine from './AdvancedAIEngine'
 

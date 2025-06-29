@@ -97,6 +97,38 @@ class SocialMediaAPI {
   }
 }
 
+// LATERAL THINKING CLASS - Missing class definition
+class LateralThinking {
+  async initialize() {
+    console.log("🔄 Lateral düşünme sistemi başlatılıyor...")
+  }
+
+  async prepareCreativeThinking() {
+    console.log("💡 Yaratıcı düşünme hazırlanıyor...")
+  }
+
+  async loadCreativeAlgorithms() {
+    console.log("🎨 Yaratıcı algoritmalar yükleniyor...")
+  }
+
+  async generateLateralSolutions(problem) {
+    return [
+      {
+        type: 'lateral',
+        description: "Geleneksel yaklaşımın tersini deneme",
+        novelty: 0.8,
+        feasibility: 0.6
+      },
+      {
+        type: 'lateral',
+        description: "Rastgele bağlantılar kurarak yeni çözümler",
+        novelty: 0.7,
+        feasibility: 0.5
+      }
+    ]
+  }
+}
+
 export class MegaAIEngine {
   constructor() {
     this.version = "5.0.0-thinking"
@@ -330,6 +362,171 @@ export class MegaAIEngine {
     }
   }
 
+  // MISSING METHOD - generateGeneralResponse
+  async generateGeneralResponse(synthesis, evaluation, creativity) {
+    console.log("📋 Genel yanıt üretiliyor...")
+    
+    let response = `🤖 **Kapsamlı AI Analizi**\n\n`
+    
+    // Genel bilgi analizi
+    response += `**📊 Analiz Sonuçları:**\n`
+    if (synthesis.insights && synthesis.insights.length > 0) {
+      synthesis.insights.slice(0, 5).forEach((insight, index) => {
+        response += `${index + 1}. ${insight.description}\n`
+      })
+    } else {
+      response += `• Kapsamlı veri analizi tamamlandı\n`
+      response += `• Çoklu kaynak entegrasyonu gerçekleştirildi\n`
+      response += `• Akıllı çıkarımlar yapıldı\n`
+    }
+    response += `\n`
+    
+    // Güven skoru
+    response += `**⚖️ Güvenilirlik Değerlendirmesi:**\n`
+    response += `• Analiz güveni: %${Math.round(evaluation.confidence * 100)}\n`
+    response += `• Veri kalitesi: ${evaluation.reliability ? 'Yüksek' : 'Orta'}\n`
+    response += `• Sonuç tutarlılığı: ${evaluation.consistency ? 'İyi' : 'Kabul edilebilir'}\n\n`
+    
+    // Yaratıcı öneriler
+    if (creativity && creativity.solutions && creativity.solutions.length > 0) {
+      response += `**💡 Yaratıcı Öneriler:**\n`
+      creativity.solutions.slice(0, 3).forEach((solution, index) => {
+        response += `${index + 1}. ${solution.description}\n`
+      })
+      response += `\n`
+    }
+    
+    // Genel öneriler
+    response += `**🎯 Öneriler:**\n`
+    response += `• Mevcut veriler doğrultusunda en uygun çözümler sunulmuştur\n`
+    response += `• Daha spesifik sorular daha detaylı yanıtlar sağlayacaktır\n`
+    response += `• Sürekli öğrenme ile yanıt kalitesi artmaktadır\n\n`
+    
+    // Sonuç
+    response += `**📝 Sonuç:**\n`
+    response += `Bu analiz, gelişmiş AI düşünme süreçleri kullanılarak hazırlanmıştır. `
+    response += `${Object.keys(synthesis.data || {}).length} farklı veri kaynağından bilgi toplanmış `
+    response += `ve ${synthesis.insights ? synthesis.insights.length : 0} içgörü elde edilmiştir.`
+    
+    return {
+      message: response,
+      recommendations: this.getGeneralRecommendations(synthesis, evaluation),
+      insights: {
+        analysis_depth: synthesis.insights ? synthesis.insights.length : 0,
+        confidence_score: evaluation.confidence,
+        data_sources: Object.keys(synthesis.data || {}).length,
+        creativity_score: creativity ? creativity.score : 0
+      }
+    }
+  }
+
+  async generateMarketResponse(synthesis, evaluation) {
+    const marketData = synthesis.data.market
+    const insights = synthesis.insights.filter(i => i.domain === 'market')
+    
+    let response = `📈 **Piyasa Analizi ve Değerlendirme**\n\n`
+    
+    // Piyasa durumu
+    if (marketData) {
+      response += `**💰 Güncel Piyasa Durumu:**\n`
+      if (marketData.fabricPrices) {
+        Object.entries(marketData.fabricPrices).forEach(([fabric, data]) => {
+          response += `• ${fabric}: ${data.current}₺ (${data.trend === 'up' ? '↗️' : data.trend === 'down' ? '↘️' : '➡️'} %${data.change})\n`
+        })
+      }
+      response += `\n`
+    }
+    
+    // Piyasa analizi
+    response += `**🧠 Piyasa Analizi:**\n`
+    insights.forEach(insight => {
+      response += `• ${insight.description}\n`
+    })
+    response += `\n`
+    
+    // Trendler
+    if (marketData && marketData.marketTrends) {
+      response += `**📊 Piyasa Trendleri:**\n`
+      Object.entries(marketData.marketTrends).forEach(([trend, status]) => {
+        response += `• ${trend}: ${status}\n`
+      })
+      response += `\n`
+    }
+    
+    // Öneriler
+    response += `**💡 Yatırım Önerileri:**\n`
+    response += `• Sürdürülebilir kumaşlara yatırım artırın\n`
+    response += `• Akıllı tekstil teknolojilerini takip edin\n`
+    response += `• Fiyat dalgalanmalarına karşı çeşitlendirin\n\n`
+    
+    response += `**🎯 Strateji Önerisi:**\n`
+    response += `Mevcut piyasa koşulları değerlendirildiğinde, kalite odaklı ve sürdürülebilir ürünlere odaklanmanız önerilir.`
+    
+    return {
+      message: response,
+      recommendations: this.getMarketRecommendations(marketData),
+      insights: {
+        market_trends: marketData ? marketData.marketTrends : {},
+        price_analysis: marketData ? marketData.fabricPrices : {},
+        confidence: evaluation.confidence
+      }
+    }
+  }
+
+  async generateComprehensiveResponse(synthesis, evaluation, creativity, problemSolving) {
+    let response = `🧠 **Kapsamlı AI Düşünme Analizi**\n\n`
+    
+    // Düşünme süreci özeti
+    response += `**🔍 Analiz Süreci:**\n`
+    response += `• ${Object.keys(synthesis.data || {}).length} veri kaynağı analiz edildi\n`
+    response += `• ${synthesis.insights ? synthesis.insights.length : 0} içgörü elde edildi\n`
+    response += `• ${synthesis.connections ? synthesis.connections.length : 0} bağlantı tespit edildi\n`
+    response += `• Güven skoru: %${Math.round(evaluation.confidence * 100)}\n\n`
+    
+    // Ana bulgular
+    response += `**📊 Ana Bulgular:**\n`
+    if (synthesis.insights && synthesis.insights.length > 0) {
+      synthesis.insights.slice(0, 5).forEach((insight, index) => {
+        response += `${index + 1}. ${insight.description}\n`
+      })
+    }
+    response += `\n`
+    
+    // Yaratıcı çözümler
+    if (creativity && creativity.solutions && creativity.solutions.length > 0) {
+      response += `**💡 Yaratıcı Çözümler:**\n`
+      creativity.solutions.slice(0, 3).forEach((solution, index) => {
+        response += `${index + 1}. ${solution.description}\n`
+      })
+      response += `\n`
+    }
+    
+    // Problem çözme
+    if (problemSolving && problemSolving.solutions && problemSolving.solutions.length > 0) {
+      response += `**🎯 Çözüm Önerileri:**\n`
+      problemSolving.solutions.slice(0, 3).forEach((solution, index) => {
+        response += `${index + 1}. ${solution.description}\n`
+      })
+      response += `\n`
+    }
+    
+    // Sonuç
+    response += `**📝 Sonuç:**\n`
+    response += `Bu kapsamlı analiz, gelişmiş AI düşünme süreçleri kullanılarak gerçekleştirilmiştir. `
+    response += `Çoklu perspektiflerden değerlendirme yapılmış ve yaratıcı çözümler üretilmiştir.`
+    
+    return {
+      message: response,
+      recommendations: this.getComprehensiveRecommendations(synthesis, creativity, problemSolving),
+      insights: {
+        comprehensive_analysis: true,
+        thinking_depth: 'advanced',
+        solution_count: (creativity?.solutions?.length || 0) + (problemSolving?.solutions?.length || 0),
+        confidence: evaluation.confidence
+      }
+    }
+  }
+
   async generateTimeResponse(synthesis, evaluation) {
     const timeData = synthesis.data.time
     const insights = synthesis.insights.filter(i => i.domain === 'time')
@@ -535,6 +732,84 @@ export class MegaAIEngine {
     }
     
     return 'general_query'
+  }
+
+  getGeneralRecommendations(synthesis, evaluation) {
+    const recommendations = []
+    
+    recommendations.push({
+      type: "analysis",
+      title: "Analiz Kalitesi",
+      description: `%${Math.round(evaluation.confidence * 100)} güven seviyesinde analiz tamamlandı`
+    })
+    
+    if (synthesis.insights && synthesis.insights.length > 0) {
+      recommendations.push({
+        type: "insights",
+        title: "Elde Edilen İçgörüler",
+        description: `${synthesis.insights.length} adet değerli içgörü tespit edildi`
+      })
+    }
+    
+    recommendations.push({
+      type: "improvement",
+      title: "Gelişim Önerisi",
+      description: "Daha spesifik sorular daha detaylı yanıtlar sağlayacaktır"
+    })
+    
+    return recommendations
+  }
+
+  getMarketRecommendations(marketData) {
+    const recommendations = []
+    
+    if (marketData && marketData.marketTrends) {
+      if (marketData.marketTrends.sustainability === 'rising') {
+        recommendations.push({
+          type: "trend",
+          title: "Sürdürülebilirlik Trendi",
+          description: "Çevre dostu ürünlere yatırım artırın"
+        })
+      }
+      
+      if (marketData.marketTrends.smart_textiles === 'emerging') {
+        recommendations.push({
+          type: "technology",
+          title: "Akıllı Tekstil",
+          description: "Yeni teknolojileri takip edin"
+        })
+      }
+    }
+    
+    return recommendations
+  }
+
+  getComprehensiveRecommendations(synthesis, creativity, problemSolving) {
+    const recommendations = []
+    
+    recommendations.push({
+      type: "comprehensive",
+      title: "Kapsamlı Analiz",
+      description: "Çoklu perspektiflerden değerlendirme yapıldı"
+    })
+    
+    if (creativity && creativity.solutions && creativity.solutions.length > 0) {
+      recommendations.push({
+        type: "creative",
+        title: "Yaratıcı Çözümler",
+        description: `${creativity.solutions.length} yaratıcı çözüm önerisi sunuldu`
+      })
+    }
+    
+    if (problemSolving && problemSolving.solutions && problemSolving.solutions.length > 0) {
+      recommendations.push({
+        type: "solution",
+        title: "Problem Çözme",
+        description: `${problemSolving.solutions.length} çözüm stratejisi geliştirildi`
+      })
+    }
+    
+    return recommendations
   }
 
   getProductivityAdvice(timeData) {

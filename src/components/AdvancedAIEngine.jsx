@@ -695,6 +695,231 @@ ${await this.getWeatherForecast()}`
   }
 }
 
+// INTELLIGENT MEMORY CLASS - Missing class definition
+class IntelligentMemory {
+  constructor() {
+    this.shortTermMemory = new Map()
+    this.longTermMemory = new Map()
+    this.contextMemory = new Map()
+    this.maxShortTermSize = 100
+    this.maxLongTermSize = 1000
+    this.memoryDecayRate = 0.1
+  }
+
+  async initialize() {
+    console.log("🧠 Intelligent Memory başlatılıyor...")
+    this.isInitialized = true
+  }
+
+  // Kısa süreli hafıza
+  storeShortTerm(key, value, importance = 0.5) {
+    const memoryItem = {
+      value,
+      timestamp: Date.now(),
+      importance,
+      accessCount: 0,
+      lastAccessed: Date.now()
+    }
+    
+    this.shortTermMemory.set(key, memoryItem)
+    
+    // Boyut kontrolü
+    if (this.shortTermMemory.size > this.maxShortTermSize) {
+      this.cleanupShortTermMemory()
+    }
+  }
+
+  // Uzun süreli hafıza
+  storeLongTerm(key, value, importance = 0.7) {
+    const memoryItem = {
+      value,
+      timestamp: Date.now(),
+      importance,
+      accessCount: 0,
+      lastAccessed: Date.now(),
+      reinforced: false
+    }
+    
+    this.longTermMemory.set(key, memoryItem)
+    
+    // Boyut kontrolü
+    if (this.longTermMemory.size > this.maxLongTermSize) {
+      this.cleanupLongTermMemory()
+    }
+  }
+
+  // Bağlam hafızası
+  storeContext(sessionId, context) {
+    this.contextMemory.set(sessionId, {
+      context,
+      timestamp: Date.now(),
+      interactions: 0
+    })
+  }
+
+  // Hafızadan getir
+  recall(key) {
+    // Önce kısa süreli hafızaya bak
+    if (this.shortTermMemory.has(key)) {
+      const item = this.shortTermMemory.get(key)
+      item.accessCount++
+      item.lastAccessed = Date.now()
+      
+      // Sık erişilen öğeleri uzun süreli hafızaya taşı
+      if (item.accessCount > 3) {
+        this.storeLongTerm(key, item.value, item.importance + 0.1)
+      }
+      
+      return item.value
+    }
+    
+    // Sonra uzun süreli hafızaya bak
+    if (this.longTermMemory.has(key)) {
+      const item = this.longTermMemory.get(key)
+      item.accessCount++
+      item.lastAccessed = Date.now()
+      
+      // Uzun süreli hafızayı güçlendir
+      item.reinforced = true
+      item.importance = Math.min(1.0, item.importance + 0.05)
+      
+      return item.value
+    }
+    
+    return null
+  }
+
+  // Bağlam getir
+  getContext(sessionId) {
+    if (this.contextMemory.has(sessionId)) {
+      const contextItem = this.contextMemory.get(sessionId)
+      contextItem.interactions++
+      return contextItem.context
+    }
+    return null
+  }
+
+  // Hafıza temizliği
+  cleanupShortTermMemory() {
+    const items = Array.from(this.shortTermMemory.entries())
+    
+    // Önem ve erişim sıklığına göre sırala
+    items.sort((a, b) => {
+      const scoreA = a[1].importance * a[1].accessCount
+      const scoreB = b[1].importance * b[1].accessCount
+      return scoreA - scoreB
+    })
+    
+    // En düşük skorlu %20'yi sil
+    const toDelete = Math.floor(items.length * 0.2)
+    for (let i = 0; i < toDelete; i++) {
+      this.shortTermMemory.delete(items[i][0])
+    }
+  }
+
+  cleanupLongTermMemory() {
+    const items = Array.from(this.longTermMemory.entries())
+    const now = Date.now()
+    
+    // Yaş ve önem skoruna göre sırala
+    items.sort((a, b) => {
+      const ageA = now - a[1].lastAccessed
+      const ageB = now - b[1].lastAccessed
+      const scoreA = a[1].importance - (ageA * this.memoryDecayRate / 86400000) // 1 gün
+      const scoreB = b[1].importance - (ageB * this.memoryDecayRate / 86400000)
+      return scoreA - scoreB
+    })
+    
+    // En düşük skorlu %10'u sil
+    const toDelete = Math.floor(items.length * 0.1)
+    for (let i = 0; i < toDelete; i++) {
+      this.longTermMemory.delete(items[i][0])
+    }
+  }
+
+  // Hafıza istatistikleri
+  getMemoryStats() {
+    return {
+      shortTermSize: this.shortTermMemory.size,
+      longTermSize: this.longTermMemory.size,
+      contextSize: this.contextMemory.size,
+      totalMemoryItems: this.shortTermMemory.size + this.longTermMemory.size,
+      memoryUtilization: {
+        shortTerm: (this.shortTermMemory.size / this.maxShortTermSize * 100).toFixed(1),
+        longTerm: (this.longTermMemory.size / this.maxLongTermSize * 100).toFixed(1)
+      }
+    }
+  }
+
+  // Hafıza konsolidasyonu
+  consolidateMemory() {
+    console.log("🧠 Hafıza konsolidasyonu başlatılıyor...")
+    
+    // Kısa süreli hafızadaki önemli öğeleri uzun süreli hafızaya taşı
+    for (const [key, item] of this.shortTermMemory.entries()) {
+      if (item.importance > 0.7 || item.accessCount > 5) {
+        this.storeLongTerm(key, item.value, item.importance)
+        this.shortTermMemory.delete(key)
+      }
+    }
+    
+    console.log("✅ Hafıza konsolidasyonu tamamlandı")
+  }
+
+  // Hafıza arama
+  searchMemory(query) {
+    const results = []
+    const lowerQuery = query.toLowerCase()
+    
+    // Kısa süreli hafızada ara
+    for (const [key, item] of this.shortTermMemory.entries()) {
+      if (key.toLowerCase().includes(lowerQuery)) {
+        results.push({
+          key,
+          value: item.value,
+          type: 'short_term',
+          relevance: this.calculateRelevance(key, query),
+          importance: item.importance
+        })
+      }
+    }
+    
+    // Uzun süreli hafızada ara
+    for (const [key, item] of this.longTermMemory.entries()) {
+      if (key.toLowerCase().includes(lowerQuery)) {
+        results.push({
+          key,
+          value: item.value,
+          type: 'long_term',
+          relevance: this.calculateRelevance(key, query),
+          importance: item.importance
+        })
+      }
+    }
+    
+    // Relevansa göre sırala
+    results.sort((a, b) => b.relevance - a.relevance)
+    
+    return results.slice(0, 10) // En alakalı 10 sonuç
+  }
+
+  calculateRelevance(key, query) {
+    const keyWords = key.toLowerCase().split(' ')
+    const queryWords = query.toLowerCase().split(' ')
+    
+    let matches = 0
+    queryWords.forEach(queryWord => {
+      keyWords.forEach(keyWord => {
+        if (keyWord.includes(queryWord) || queryWord.includes(keyWord)) {
+          matches++
+        }
+      })
+    })
+    
+    return matches / Math.max(keyWords.length, queryWords.length)
+  }
+}
+
 // MEGA VERİ KAYNAKLARI
 class MegaFabricDatabase {
   constructor() {

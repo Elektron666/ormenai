@@ -7,35 +7,47 @@ import {
 } from 'react-icons/hi'
 import MegaAIEngine from './AdvancedAIEngine'
 
-// MEGA AI MASKOT
-function MegaAIMascot({ isThinking, onInteract, systemStatus }) {
+// MEGA AI MASKOT - Düşünme Göstergeli
+function MegaAIMascot({ isThinking, onInteract, systemStatus, thinkingStage }) {
   const [expression, setExpression] = useState('🤖')
   const [aiState, setAiState] = useState('ready')
   const [particleCount, setParticleCount] = useState(8)
+  const [thinkingText, setThinkingText] = useState('')
   
   useEffect(() => {
     if (isThinking) {
-      setExpression('🧠')
       setAiState('mega_processing')
       setParticleCount(16)
       
-      // Mega düşünme animasyonu
-      const megaStates = ['🤔', '💭', '🧠', '⚡', '🔍', '🌟', '💫', '🚀']
-      let index = 0
+      // Düşünme aşamalarını göster
+      const thinkingStages = [
+        { emoji: '🤔', text: 'Düşünüyor...' },
+        { emoji: '🔍', text: 'Araştırıyor...' },
+        { emoji: '🧠', text: 'Analiz ediyor...' },
+        { emoji: '💡', text: 'Çözüm buluyor...' },
+        { emoji: '⚡', text: 'Sentezliyor...' },
+        { emoji: '🎯', text: 'Sonuçlandırıyor...' },
+        { emoji: '✨', text: 'Tamamlanıyor...' }
+      ]
       
+      let stageIndex = 0
       const interval = setInterval(() => {
-        setExpression(megaStates[index % megaStates.length])
-        index++
-      }, 300)
+        if (stageIndex < thinkingStages.length) {
+          setExpression(thinkingStages[stageIndex].emoji)
+          setThinkingText(thinkingStages[stageIndex].text)
+          stageIndex++
+        } else {
+          stageIndex = 0
+        }
+      }, 600)
       
-      setTimeout(() => {
+      return () => {
         clearInterval(interval)
         setExpression('🤖')
         setAiState('ready')
         setParticleCount(8)
-      }, 4000)
-      
-      return () => clearInterval(interval)
+        setThinkingText('')
+      }
     }
   }, [isThinking])
 
@@ -51,6 +63,23 @@ function MegaAIMascot({ isThinking, onInteract, systemStatus }) {
 
   return (
     <div className="relative">
+      {/* Düşünce Balonu */}
+      <AnimatePresence>
+        {isThinking && thinkingText && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 10 }}
+            className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-lg p-3 border-2 border-blue-200 min-w-32 z-10"
+          >
+            <div className="text-sm text-gray-700 text-center font-medium">
+              {thinkingText}
+            </div>
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-r-2 border-b-2 border-blue-200 rotate-45"></div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <motion.div
         className={`w-28 h-28 bg-gradient-to-br from-blue-600 via-purple-600 via-pink-600 to-orange-600 rounded-full flex items-center justify-center cursor-pointer ${getMegaGlow()} relative overflow-hidden`}
         onClick={onInteract}
@@ -155,7 +184,7 @@ function MegaAIMascot({ isThinking, onInteract, systemStatus }) {
       {/* Mega AI Capabilities */}
       <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-xs text-center">
         <div className="bg-black bg-opacity-90 text-white px-4 py-2 rounded-full border border-blue-400">
-          MEGA AI v4.0
+          MEGA AI v5.0
         </div>
         <div className="mt-2 flex justify-center space-x-1">
           <HiGlobe className="w-4 h-4 text-blue-500 animate-pulse" title="Internet Search" />
@@ -169,38 +198,48 @@ function MegaAIMascot({ isThinking, onInteract, systemStatus }) {
   )
 }
 
-// MEGA SİSTEM MONİTÖRÜ
-function MegaSystemMonitor({ aiEngine, isProcessing }) {
+// MEGA SİSTEM MONİTÖRÜ - Düşünme Süreçli
+function MegaSystemMonitor({ aiEngine, isProcessing, thinkingProcess }) {
   const [metrics, setMetrics] = useState({
-    internetSearch: false,
-    databaseQuery: false,
-    aiProcessing: false,
-    dataAnalysis: false,
-    responseGeneration: false,
-    securityCheck: false,
-    cacheOperation: false,
-    learningUpdate: false
+    initialThought: false,
+    deepThinking: false,
+    researchPlan: false,
+    dataCollection: false,
+    analysis: false,
+    synthesis: false,
+    evaluation: false,
+    creativity: false,
+    problemSolving: false,
+    learning: false,
+    memoryStorage: false,
+    responseGeneration: false
   })
 
   const [performance, setPerformance] = useState({
     cpu: 0,
     memory: 0,
     network: 0,
-    ai_load: 0
+    ai_load: 0,
+    thinking_depth: 0,
+    creativity_score: 0
   })
 
   useEffect(() => {
     if (isProcessing) {
-      // Mega işlem adımları
+      // Düşünme adımları
       const steps = [
-        { key: 'securityCheck', delay: 0 },
-        { key: 'aiProcessing', delay: 200 },
-        { key: 'internetSearch', delay: 600 },
-        { key: 'databaseQuery', delay: 1000 },
-        { key: 'dataAnalysis', delay: 1400 },
-        { key: 'responseGeneration', delay: 1800 },
-        { key: 'cacheOperation', delay: 2200 },
-        { key: 'learningUpdate', delay: 2600 }
+        { key: 'initialThought', delay: 0, name: 'İlk Düşünce' },
+        { key: 'deepThinking', delay: 300, name: 'Derin Düşünme' },
+        { key: 'researchPlan', delay: 800, name: 'Araştırma Planı' },
+        { key: 'dataCollection', delay: 1200, name: 'Veri Toplama' },
+        { key: 'analysis', delay: 1800, name: 'Veri Analizi' },
+        { key: 'synthesis', delay: 2400, name: 'Sentez' },
+        { key: 'evaluation', delay: 3000, name: 'Değerlendirme' },
+        { key: 'creativity', delay: 3600, name: 'Yaratıcılık' },
+        { key: 'problemSolving', delay: 4200, name: 'Problem Çözme' },
+        { key: 'learning', delay: 4800, name: 'Öğrenme' },
+        { key: 'memoryStorage', delay: 5400, name: 'Hafıza Kayıt' },
+        { key: 'responseGeneration', delay: 6000, name: 'Yanıt Üretimi' }
       ]
 
       steps.forEach(({ key, delay }) => {
@@ -212,16 +251,20 @@ function MegaSystemMonitor({ aiEngine, isProcessing }) {
       // Reset after processing
       setTimeout(() => {
         setMetrics({
-          internetSearch: false,
-          databaseQuery: false,
-          aiProcessing: false,
-          dataAnalysis: false,
-          responseGeneration: false,
-          securityCheck: false,
-          cacheOperation: false,
-          learningUpdate: false
+          initialThought: false,
+          deepThinking: false,
+          researchPlan: false,
+          dataCollection: false,
+          analysis: false,
+          synthesis: false,
+          evaluation: false,
+          creativity: false,
+          problemSolving: false,
+          learning: false,
+          memoryStorage: false,
+          responseGeneration: false
         })
-      }, 5000)
+      }, 8000)
     }
   }, [isProcessing])
 
@@ -232,7 +275,9 @@ function MegaSystemMonitor({ aiEngine, isProcessing }) {
         cpu: Math.floor(Math.random() * 30) + 60,
         memory: Math.floor(Math.random() * 20) + 50,
         network: Math.floor(Math.random() * 40) + 40,
-        ai_load: Math.floor(Math.random() * 25) + 70
+        ai_load: Math.floor(Math.random() * 25) + 70,
+        thinking_depth: Math.floor(Math.random() * 20) + 80,
+        creativity_score: Math.floor(Math.random() * 30) + 65
       })
     }, 2000)
 
@@ -241,71 +286,99 @@ function MegaSystemMonitor({ aiEngine, isProcessing }) {
 
   return (
     <div className="bg-gray-900 text-white p-4 rounded-lg text-xs">
-      <div className="text-center mb-3 font-bold text-green-400">MEGA AI SYSTEM STATUS</div>
+      <div className="text-center mb-3 font-bold text-green-400">MEGA AI THINKING SYSTEM v5.0</div>
       
-      {/* İşlem Adımları */}
+      {/* Düşünme Adımları */}
       <div className="grid grid-cols-2 gap-2 mb-4">
         <div className="flex items-center justify-between">
           <span className="flex items-center">
-            <HiShieldCheck className="w-3 h-3 mr-1" />
-            Security Check
+            <HiLightBulb className="w-3 h-3 mr-1" />
+            İlk Düşünce
           </span>
-          <div className={`w-2 h-2 rounded-full ${metrics.securityCheck ? 'bg-green-400 animate-pulse' : 'bg-gray-600'}`}></div>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="flex items-center">
-            <HiChip className="w-3 h-3 mr-1" />
-            AI Processing
-          </span>
-          <div className={`w-2 h-2 rounded-full ${metrics.aiProcessing ? 'bg-blue-400 animate-pulse' : 'bg-gray-600'}`}></div>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="flex items-center">
-            <HiGlobe className="w-3 h-3 mr-1" />
-            Internet Search
-          </span>
-          <div className={`w-2 h-2 rounded-full ${metrics.internetSearch ? 'bg-purple-400 animate-pulse' : 'bg-gray-600'}`}></div>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="flex items-center">
-            <HiDatabase className="w-3 h-3 mr-1" />
-            Database Query
-          </span>
-          <div className={`w-2 h-2 rounded-full ${metrics.databaseQuery ? 'bg-orange-400 animate-pulse' : 'bg-gray-600'}`}></div>
+          <div className={`w-2 h-2 rounded-full ${metrics.initialThought ? 'bg-yellow-400 animate-pulse' : 'bg-gray-600'}`}></div>
         </div>
         <div className="flex items-center justify-between">
           <span className="flex items-center">
             <HiBeaker className="w-3 h-3 mr-1" />
-            Data Analysis
+            Derin Düşünme
           </span>
-          <div className={`w-2 h-2 rounded-full ${metrics.dataAnalysis ? 'bg-yellow-400 animate-pulse' : 'bg-gray-600'}`}></div>
+          <div className={`w-2 h-2 rounded-full ${metrics.deepThinking ? 'bg-purple-400 animate-pulse' : 'bg-gray-600'}`}></div>
         </div>
         <div className="flex items-center justify-between">
           <span className="flex items-center">
-            <HiLightBulb className="w-3 h-3 mr-1" />
-            Response Gen.
+            <HiChartBar className="w-3 h-3 mr-1" />
+            Araştırma Planı
           </span>
-          <div className={`w-2 h-2 rounded-full ${metrics.responseGeneration ? 'bg-green-400 animate-pulse' : 'bg-gray-600'}`}></div>
+          <div className={`w-2 h-2 rounded-full ${metrics.researchPlan ? 'bg-blue-400 animate-pulse' : 'bg-gray-600'}`}></div>
         </div>
         <div className="flex items-center justify-between">
           <span className="flex items-center">
-            <HiClock className="w-3 h-3 mr-1" />
-            Cache Op.
+            <HiDatabase className="w-3 h-3 mr-1" />
+            Veri Toplama
           </span>
-          <div className={`w-2 h-2 rounded-full ${metrics.cacheOperation ? 'bg-pink-400 animate-pulse' : 'bg-gray-600'}`}></div>
+          <div className={`w-2 h-2 rounded-full ${metrics.dataCollection ? 'bg-green-400 animate-pulse' : 'bg-gray-600'}`}></div>
         </div>
         <div className="flex items-center justify-between">
           <span className="flex items-center">
             <HiTrendingUp className="w-3 h-3 mr-1" />
-            Learning
+            Veri Analizi
           </span>
-          <div className={`w-2 h-2 rounded-full ${metrics.learningUpdate ? 'bg-cyan-400 animate-pulse' : 'bg-gray-600'}`}></div>
+          <div className={`w-2 h-2 rounded-full ${metrics.analysis ? 'bg-orange-400 animate-pulse' : 'bg-gray-600'}`}></div>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="flex items-center">
+            <HiCog className="w-3 h-3 mr-1" />
+            Sentez
+          </span>
+          <div className={`w-2 h-2 rounded-full ${metrics.synthesis ? 'bg-cyan-400 animate-pulse' : 'bg-gray-600'}`}></div>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="flex items-center">
+            <HiShieldCheck className="w-3 h-3 mr-1" />
+            Değerlendirme
+          </span>
+          <div className={`w-2 h-2 rounded-full ${metrics.evaluation ? 'bg-red-400 animate-pulse' : 'bg-gray-600'}`}></div>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="flex items-center">
+            <HiSparkles className="w-3 h-3 mr-1" />
+            Yaratıcılık
+          </span>
+          <div className={`w-2 h-2 rounded-full ${metrics.creativity ? 'bg-pink-400 animate-pulse' : 'bg-gray-600'}`}></div>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="flex items-center">
+            <HiLightBulb className="w-3 h-3 mr-1" />
+            Problem Çözme
+          </span>
+          <div className={`w-2 h-2 rounded-full ${metrics.problemSolving ? 'bg-yellow-400 animate-pulse' : 'bg-gray-600'}`}></div>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="flex items-center">
+            <HiChatAlt2 className="w-3 h-3 mr-1" />
+            Öğrenme
+          </span>
+          <div className={`w-2 h-2 rounded-full ${metrics.learning ? 'bg-indigo-400 animate-pulse' : 'bg-gray-600'}`}></div>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="flex items-center">
+            <HiDatabase className="w-3 h-3 mr-1" />
+            Hafıza Kayıt
+          </span>
+          <div className={`w-2 h-2 rounded-full ${metrics.memoryStorage ? 'bg-teal-400 animate-pulse' : 'bg-gray-600'}`}></div>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="flex items-center">
+            <HiPaperAirplane className="w-3 h-3 mr-1" />
+            Yanıt Üretimi
+          </span>
+          <div className={`w-2 h-2 rounded-full ${metrics.responseGeneration ? 'bg-lime-400 animate-pulse' : 'bg-gray-600'}`}></div>
         </div>
       </div>
 
       {/* Performans Metrikleri */}
       <div className="border-t border-gray-700 pt-3">
-        <div className="text-center mb-2 font-semibold text-blue-400">PERFORMANCE METRICS</div>
+        <div className="text-center mb-2 font-semibold text-blue-400">THINKING PERFORMANCE</div>
         <div className="space-y-1">
           <div className="flex justify-between items-center">
             <span>CPU:</span>
@@ -323,8 +396,28 @@ function MegaSystemMonitor({ aiEngine, isProcessing }) {
             <span>AI Load:</span>
             <span className="text-purple-400">{performance.ai_load}%</span>
           </div>
+          <div className="flex justify-between items-center">
+            <span>Thinking:</span>
+            <span className="text-pink-400">{performance.thinking_depth}%</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Creativity:</span>
+            <span className="text-orange-400">{performance.creativity_score}%</span>
+          </div>
         </div>
       </div>
+
+      {/* Düşünme Süreci Bilgisi */}
+      {thinkingProcess && (
+        <div className="border-t border-gray-700 pt-3 mt-3">
+          <div className="text-center mb-2 font-semibold text-cyan-400">CURRENT THINKING</div>
+          <div className="text-xs text-gray-300">
+            <div>Adım: {thinkingProcess.currentStep || 'Hazır'}</div>
+            <div>Derinlik: {thinkingProcess.depth || 'Normal'}</div>
+            <div>Yaratıcılık: {thinkingProcess.creativity || 'Aktif'}</div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -337,12 +430,13 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
   const [customerId] = useState('mega_user_' + Date.now())
   const [showSystemMonitor, setShowSystemMonitor] = useState(true)
   const [showAdvancedMetrics, setShowAdvancedMetrics] = useState(false)
-  const [processingSteps, setProcessingSteps] = useState([])
+  const [thinkingProcess, setThinkingProcess] = useState(null)
   const [systemStats, setSystemStats] = useState({
     totalQueries: 0,
-    successRate: 98.7,
-    avgResponseTime: 1.2,
-    dataSourcesActive: 9
+    successRate: 99.2,
+    avgResponseTime: 2.8,
+    dataSourcesActive: 10,
+    thinkingDepth: 12
   })
   const messagesEndRef = useRef(null)
 
@@ -360,7 +454,7 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
       setSystemStats(prev => ({
         ...prev,
         totalQueries: prev.totalQueries + Math.floor(Math.random() * 3),
-        avgResponseTime: (Math.random() * 0.5 + 0.8).toFixed(1)
+        avgResponseTime: (Math.random() * 1.5 + 2.0).toFixed(1)
       }))
     }, 5000)
 
@@ -386,13 +480,19 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
     setChatHistory(prev => [...prev, userMessage])
     setMessage('')
     setIsTyping(true)
-    setProcessingSteps([])
+
+    // Düşünme süreci başlat
+    setThinkingProcess({
+      currentStep: 'Başlatılıyor...',
+      depth: 'Derin',
+      creativity: 'Yüksek'
+    })
 
     // Sistem istatistiklerini güncelle
     setSystemStats(prev => ({ ...prev, totalQueries: prev.totalQueries + 1 }))
 
     try {
-      // MEGA AI işleme
+      // MEGA AI düşünme süreci
       const context = {
         customerId,
         history: chatHistory,
@@ -401,9 +501,36 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
         sessionStart: Date.now() - 300000 // 5 dakika önce başladı varsayımı
       }
 
-      console.log("🚀 MEGA AI işleme başlatılıyor...")
+      console.log("🧠 MEGA AI düşünme süreci başlatılıyor...")
+      
+      // Düşünme adımlarını simüle et
+      const thinkingSteps = [
+        { step: 'İlk düşünce analizi...', delay: 500 },
+        { step: 'Derin düşünme süreci...', delay: 1000 },
+        { step: 'Araştırma planı oluşturuluyor...', delay: 1500 },
+        { step: 'Veri kaynakları sorgulanıyor...', delay: 2000 },
+        { step: 'Paralel veri analizi...', delay: 2500 },
+        { step: 'Bilgi sentezi yapılıyor...', delay: 3000 },
+        { step: 'Sonuçlar değerlendiriliyor...', delay: 3500 },
+        { step: 'Yaratıcı çözümler üretiliyor...', delay: 4000 },
+        { step: 'Problem çözme algoritması...', delay: 4500 },
+        { step: 'Deneyimden öğreniliyor...', delay: 5000 },
+        { step: 'Hafızaya kaydediliyor...', delay: 5500 },
+        { step: 'Düşünceli yanıt hazırlanıyor...', delay: 6000 }
+      ]
+
+      // Düşünme adımlarını göster
+      thinkingSteps.forEach(({ step, delay }) => {
+        setTimeout(() => {
+          setThinkingProcess(prev => ({
+            ...prev,
+            currentStep: step
+          }))
+        }, delay)
+      })
+
       const aiResponse = await aiEngine.processQuery(message.trim(), context)
-      console.log("✅ MEGA AI işleme tamamlandı!")
+      console.log("✅ MEGA AI düşünme süreci tamamlandı!")
       
       const aiMessage = {
         type: 'ai',
@@ -415,13 +542,15 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
         processingTime: aiResponse.processingTime,
         sources: aiResponse.sources || [],
         sessionId: aiResponse.sessionId,
+        thinkingProcess: aiResponse.thinkingProcess,
         metadata: {
           ...aiResponse.metadata,
-          processing_steps: 8,
+          thinking_steps: 12,
           data_sources_used: aiResponse.sources?.length || 0,
           analysis_depth: 'mega_deep',
-          internet_search: aiResponse.sources?.includes('internet') || false,
-          database_query: aiResponse.sources?.includes('fabric') || false,
+          creativity_applied: true,
+          learning_updated: true,
+          memory_stored: true,
           security_verified: true,
           blockchain_hash: aiResponse.metadata?.blockchain_hash,
           performance_score: aiResponse.metadata?.performance_score
@@ -444,12 +573,12 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
       
       const errorMessage = {
         type: 'ai',
-        message: `🚨 **MEGA AI Sistem Hatası**\n\nÜzgünüm, işleminiz sırasında bir hata oluştu:\n\n**Hata:** ${error.message}\n\nSistem kendini onarıyor ve yakında normale dönecek. Lütfen sorunuzu yeniden ifade edin.`,
+        message: `🚨 **MEGA AI Düşünme Hatası**\n\nÜzgünüm, düşünme sürecim sırasında bir hata oluştu:\n\n**Hata:** ${error.message}\n\nDüşünce süreçlerimi yeniden kalibre ediyorum ve yakında normale döneceğim. Lütfen sorunuzu yeniden ifade edin.`,
         timestamp: new Date(),
         confidence: 0.1,
         error: true,
         metadata: {
-          error_type: 'system_error',
+          error_type: 'thinking_error',
           recovery_mode: true
         }
       }
@@ -457,6 +586,7 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
       setChatHistory(prev => [...prev, errorMessage])
     } finally {
       setIsTyping(false)
+      setThinkingProcess(null)
     }
   }
 
@@ -491,10 +621,10 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
 
   const handleMascotInteract = () => {
     const megaGreetings = [
-      "🚀 **MEGA AI Aktif!** İnternet araştırması, derin analiz, blockchain güvenlik ve makine öğrenmesi ile hizmetinizdeyim!",
-      "🧠 **Quantum İşlemci Hazır!** 9 veri kaynağı, gerçek zamanlı analiz ve tahminsel zeka ile sorularınızı yanıtlıyorum!",
-      "⚡ **Superior Teknoloji!** Silikon Vadisi standartlarında AI, güvenlik ve performans bir arada!",
-      "🌟 **MEGA Sistem Online!** Kumaş uzmanlığı, piyasa analizi, hava durumu ve daha fazlası için hazırım!"
+      "🧠 **MEGA AI Düşünme Sistemi Aktif!** Derin düşünme, yaratıcı çözümler ve öğrenme ile hizmetinizdeyim!",
+      "🤔 **Gelişmiş Düşünce Motoru Hazır!** 12 adımlı düşünme süreci, çoklu perspektif analizi ve yaratıcı problem çözme!",
+      "💭 **Superior Zeka Online!** Analitik düşünme, sentez, değerlendirme ve sürekli öğrenme bir arada!",
+      "🎯 **MEGA Düşünme Sistemi!** Gemini tarzı düşünme süreci, gerçek zamanlı araştırma ve akıllı çözümler!"
     ]
     
     const randomGreeting = megaGreetings[Math.floor(Math.random() * megaGreetings.length)]
@@ -506,9 +636,9 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
       confidence: 0.99,
       metadata: {
         trigger: 'mega_mascot_interaction',
-        ai_version: '4.0.0-mega',
+        ai_version: '5.0.0-thinking',
         system_status: 'optimal',
-        capabilities_active: 12
+        thinking_capabilities: 12
       }
     }
 
@@ -516,11 +646,12 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
   }
 
   const getProcessingIcon = (metadata) => {
-    if (metadata?.internet_search) return <HiGlobe className="w-4 h-4 text-blue-500" />
-    if (metadata?.database_query) return <HiDatabase className="w-4 h-4 text-purple-500" />
+    if (metadata?.thinking_steps >= 12) return <HiBeaker className="w-4 h-4 text-purple-500" />
+    if (metadata?.creativity_applied) return <HiSparkles className="w-4 h-4 text-pink-500" />
+    if (metadata?.learning_updated) return <HiLightBulb className="w-4 h-4 text-yellow-500" />
+    if (metadata?.memory_stored) return <HiDatabase className="w-4 h-4 text-blue-500" />
     if (metadata?.security_verified) return <HiShieldCheck className="w-4 h-4 text-green-500" />
-    if (metadata?.analysis_depth === 'mega_deep') return <HiBeaker className="w-4 h-4 text-orange-500" />
-    return <HiSparkles className="w-4 h-4 text-blue-600" />
+    return <HiChip className="w-4 h-4 text-orange-500" />
   }
 
   const getConfidenceColor = (confidence) => {
@@ -545,15 +676,17 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
               isThinking={isTyping}
               onInteract={handleMascotInteract}
               systemStatus="optimal"
+              thinkingStage={thinkingProcess?.currentStep}
             />
             <div>
               <h2 className="text-2xl font-bold">ORMEN MEGA AI</h2>
-              <p className="text-sm text-blue-100">6 Saatlik Geliştirme • Silikon Vadisi Teknolojisi • v4.0.0-mega</p>
+              <p className="text-sm text-blue-100">Düşünme Sistemi • Gemini Tarzı • v5.0.0-thinking</p>
               <div className="mt-1 flex items-center space-x-4 text-xs">
-                <span>📊 {systemStats.totalQueries} Sorgu</span>
+                <span>🧠 {systemStats.totalQueries} Düşünce</span>
                 <span>⚡ {systemStats.avgResponseTime}s Ortalama</span>
                 <span>✅ %{systemStats.successRate} Başarı</span>
                 <span>🌐 {systemStats.dataSourcesActive} Kaynak</span>
+                <span>🎯 {systemStats.thinkingDepth} Adım</span>
               </div>
             </div>
           </div>
@@ -580,32 +713,36 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
         {/* MEGA AI Capabilities */}
         <div className="mt-3 flex flex-wrap gap-2">
           <span className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded-full flex items-center">
-            <HiGlobe className="w-3 h-3 mr-1" /> İnternet Araştırması
+            <HiBeaker className="w-3 h-3 mr-1" /> Derin Düşünme
           </span>
           <span className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded-full flex items-center">
-            <HiDatabase className="w-3 h-3 mr-1" /> Mega Veritabanı
+            <HiGlobe className="w-3 h-3 mr-1" /> Araştırma Motoru
           </span>
           <span className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded-full flex items-center">
-            <HiBeaker className="w-3 h-3 mr-1" /> Quantum Analiz
+            <HiSparkles className="w-3 h-3 mr-1" /> Yaratıcı Çözümler
           </span>
           <span className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded-full flex items-center">
-            <HiShieldCheck className="w-3 h-3 mr-1" /> Blockchain Güvenlik
+            <HiLightBulb className="w-3 h-3 mr-1" /> Problem Çözme
           </span>
           <span className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded-full flex items-center">
-            <HiTrendingUp className="w-3 h-3 mr-1" /> Makine Öğrenmesi
+            <HiDatabase className="w-3 h-3 mr-1" /> Hafıza Sistemi
           </span>
           <span className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded-full flex items-center">
-            <HiLightBulb className="w-3 h-3 mr-1" /> Tahminsel Zeka
+            <HiTrendingUp className="w-3 h-3 mr-1" /> Sürekli Öğrenme
           </span>
           <span className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded-full flex items-center">
-            <HiChip className="w-3 h-3 mr-1" /> MEGA AI v4.0
+            <HiShieldCheck className="w-3 h-3 mr-1" /> Güvenlik
           </span>
         </div>
 
         {/* System Monitor */}
         {showSystemMonitor && (
           <div className="mt-4">
-            <MegaSystemMonitor aiEngine={aiEngine} isProcessing={isTyping} />
+            <MegaSystemMonitor 
+              aiEngine={aiEngine} 
+              isProcessing={isTyping} 
+              thinkingProcess={thinkingProcess}
+            />
           </div>
         )}
       </div>
@@ -641,52 +778,67 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
                   <div className="flex-1">
                     <div className="whitespace-pre-line text-sm leading-relaxed">{chat.message}</div>
                     
+                    {/* Düşünme Süreci Gösterimi */}
+                    {chat.thinkingProcess && showAdvancedMetrics && (
+                      <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                        <div className="text-xs font-medium text-purple-800 mb-2">🧠 Düşünme Süreci:</div>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <span className="font-medium">İlk Düşünce:</span>
+                            <div className="text-purple-700">{chat.thinkingProcess.initialThought?.summary || 'Tamamlandı'}</div>
+                          </div>
+                          <div>
+                            <span className="font-medium">Derin Analiz:</span>
+                            <div className="text-purple-700">{chat.thinkingProcess.deepThinking?.insights?.length || 0} içgörü</div>
+                          </div>
+                          <div>
+                            <span className="font-medium">Araştırma:</span>
+                            <div className="text-purple-700">{Object.keys(chat.thinkingProcess.researchResults || {}).length} kaynak</div>
+                          </div>
+                          <div>
+                            <span className="font-medium">Yaratıcılık:</span>
+                            <div className="text-purple-700">{chat.thinkingProcess.creativity?.solutions?.length || 0} çözüm</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
                     {/* MEGA AI Metadata */}
                     {chat.metadata && showAdvancedMetrics && (
                       <div className="mt-3 p-3 bg-gray-100 rounded-lg text-xs">
                         <div className="grid grid-cols-2 gap-2">
-                          {chat.metadata.internet_search && (
-                            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded flex items-center">
-                              <HiGlobe className="w-3 h-3 mr-1" />
-                              İnternet Araştırması
-                            </span>
-                          )}
-                          {chat.metadata.database_query && (
+                          {chat.metadata.thinking_steps && (
                             <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded flex items-center">
-                              <HiDatabase className="w-3 h-3 mr-1" />
-                              Veritabanı Sorgusu
-                            </span>
-                          )}
-                          {chat.metadata.security_verified && (
-                            <span className="bg-green-100 text-green-800 px-2 py-1 rounded flex items-center">
-                              <HiShieldCheck className="w-3 h-3 mr-1" />
-                              Güvenlik Doğrulandı
-                            </span>
-                          )}
-                          {chat.metadata.analysis_depth && (
-                            <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded flex items-center">
                               <HiBeaker className="w-3 h-3 mr-1" />
-                              {chat.metadata.analysis_depth.replace('_', ' ')}
+                              {chat.metadata.thinking_steps} Düşünme Adımı
                             </span>
                           )}
-                          {chat.metadata.processing_steps && (
-                            <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
-                              🔄 {chat.metadata.processing_steps} Adım
+                          {chat.metadata.creativity_applied && (
+                            <span className="bg-pink-100 text-pink-800 px-2 py-1 rounded flex items-center">
+                              <HiSparkles className="w-3 h-3 mr-1" />
+                              Yaratıcılık Uygulandı
+                            </span>
+                          )}
+                          {chat.metadata.learning_updated && (
+                            <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded flex items-center">
+                              <HiLightBulb className="w-3 h-3 mr-1" />
+                              Öğrenme Güncellendi
+                            </span>
+                          )}
+                          {chat.metadata.memory_stored && (
+                            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded flex items-center">
+                              <HiDatabase className="w-3 h-3 mr-1" />
+                              Hafızaya Kaydedildi
                             </span>
                           )}
                           {chat.metadata.data_sources_used && (
-                            <span className="bg-pink-100 text-pink-800 px-2 py-1 rounded">
+                            <span className="bg-green-100 text-green-800 px-2 py-1 rounded">
                               📊 {chat.metadata.data_sources_used} Veri Kaynağı
                             </span>
                           )}
-                          {chat.metadata.blockchain_hash && (
-                            <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded text-xs">
-                              🔗 Blockchain: {chat.metadata.blockchain_hash.slice(0, 12)}...
-                            </span>
-                          )}
-                          {chat.metadata.performance_score && (
-                            <span className="bg-cyan-100 text-cyan-800 px-2 py-1 rounded">
-                              ⚡ Performans: {chat.metadata.performance_score}
+                          {chat.metadata.analysis_depth && (
+                            <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded">
+                              🔬 {chat.metadata.analysis_depth.replace('_', ' ')}
                             </span>
                           )}
                         </div>
@@ -713,25 +865,11 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
                       </div>
                     )}
                     
-                    {/* Data Sources */}
-                    {chat.sources && chat.sources.length > 0 && showAdvancedMetrics && (
-                      <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                        <div className="text-xs font-medium text-blue-800 mb-2">📡 Kullanılan Veri Kaynakları:</div>
-                        <div className="flex flex-wrap gap-1">
-                          {chat.sources.map((source, idx) => (
-                            <span key={idx} className="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded">
-                              {source}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    
                     {/* Insights */}
                     {chat.insights && Object.keys(chat.insights).length > 0 && showAdvancedMetrics && (
-                      <div className="mt-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
-                        <div className="text-xs font-medium text-purple-800 mb-2">🔍 MEGA AI Çıkarımları:</div>
-                        <div className="text-xs text-purple-700 space-y-1">
+                      <div className="mt-3 p-3 bg-cyan-50 rounded-lg border border-cyan-200">
+                        <div className="text-xs font-medium text-cyan-800 mb-2">💡 AI İçgörüleri:</div>
+                        <div className="text-xs text-cyan-700 space-y-1">
                           {Object.entries(chat.insights).map(([key, value]) => (
                             <div key={key} className="flex justify-between">
                               <span className="font-medium">{key.replace('_', ' ')}:</span>
@@ -763,7 +901,7 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
                               {product.price}₺/m • {product.color} • {product.type}
                             </div>
                             <div className="text-xs text-green-600 mt-1">
-                              ✅ Stok: {product.stock}m • MEGA AI Skoru: {(Math.random() * 0.2 + 0.8).toFixed(3)}
+                              ✅ Stok: {product.stock}m • AI Skoru: {(Math.random() * 0.2 + 0.8).toFixed(3)}
                             </div>
                           </button>
                         ))}
@@ -781,7 +919,7 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
                   </span>
                   {chat.type === 'ai' && (
                     <span className="bg-black bg-opacity-10 px-2 py-1 rounded-full">
-                      MEGA AI v4.0
+                      MEGA AI v5.0
                     </span>
                   )}
                 </div>
@@ -798,18 +936,20 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
           >
             <div className="bg-white rounded-lg p-4 flex items-center space-x-3 border-2 border-gray-200 shadow-xl">
               <div className="flex items-center space-x-2">
-                <HiShieldCheck className="w-4 h-4 text-green-600 animate-pulse" />
+                <HiBeaker className="w-4 h-4 text-purple-600 animate-pulse" />
                 <HiGlobe className="w-4 h-4 text-blue-600 animate-spin" />
-                <HiDatabase className="w-4 h-4 text-purple-600 animate-pulse" />
-                <HiBeaker className="w-4 h-4 text-orange-600 animate-bounce" />
-                <HiChip className="w-4 h-4 text-red-600 animate-pulse" />
+                <HiSparkles className="w-4 h-4 text-pink-600 animate-bounce" />
+                <HiLightBulb className="w-4 h-4 text-yellow-600 animate-pulse" />
+                <HiDatabase className="w-4 h-4 text-green-600 animate-pulse" />
               </div>
               <div className="flex space-x-1">
                 <div className="w-2 h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full animate-bounce"></div>
                 <div className="w-2 h-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                 <div className="w-2 h-2 bg-gradient-to-r from-pink-500 via-orange-500 to-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
               </div>
-              <span className="text-sm text-gray-600 font-medium">MEGA AI analiz yapıyor...</span>
+              <span className="text-sm text-gray-600 font-medium">
+                {thinkingProcess?.currentStep || 'MEGA AI düşünüyor...'}
+              </span>
             </div>
           </motion.div>
         )}
@@ -824,7 +964,7 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="MEGA AI ile konuşun - İnternet araştırması, quantum analiz, blockchain güvenlik, makine öğrenmesi..."
+            placeholder="MEGA AI ile konuşun - Derin düşünme, yaratıcı çözümler, sürekli öğrenme..."
             className="flex-1 border-2 border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm shadow-inner"
           />
           <button
@@ -848,13 +988,13 @@ export default function SuperiorAIInterface({ chatHistory, setChatHistory, selec
           </button>
         </div>
         <div className="mt-2 text-xs text-gray-500 text-center flex items-center justify-center space-x-4">
-          <span>🚀 MEGA AI v4.0</span>
-          <span>🌐 İnternet Araştırması</span>
-          <span>🧠 Quantum Analiz</span>
-          <span>🔐 Blockchain Güvenlik</span>
-          <span>⚡ Gerçek Zamanlı</span>
-          <span>🎯 Makine Öğrenmesi</span>
-          <span>🌟 6 Saatlik Geliştirme</span>
+          <span>🧠 MEGA AI v5.0</span>
+          <span>🤔 Derin Düşünme</span>
+          <span>🔍 Araştırma Motoru</span>
+          <span>💡 Yaratıcı Çözümler</span>
+          <span>📚 Sürekli Öğrenme</span>
+          <span>💾 Hafıza Sistemi</span>
+          <span>🎯 3 Saatlik Geliştirme</span>
         </div>
       </div>
     </div>

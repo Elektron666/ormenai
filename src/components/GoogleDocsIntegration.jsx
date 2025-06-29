@@ -5,8 +5,8 @@ import { HiDocumentText, HiTable, HiCloudUpload, HiDownload, HiRefresh } from 'r
 
 export class GoogleDocsAPI {
   constructor() {
-    this.apiKey = process.env.REACT_APP_GOOGLE_API_KEY || 'demo_key'
-    this.clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || 'demo_client'
+    this.apiKey = import.meta.env.VITE_GOOGLE_API_KEY || 'demo_key'
+    this.clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'demo_client'
     this.isAuthenticated = false
     this.accessToken = null
   }
